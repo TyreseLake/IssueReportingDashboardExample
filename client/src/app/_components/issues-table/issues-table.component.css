@@ -1,0 +1,16 @@
+thead tr{
+  border-bottom-width: medium !important;
+}
+
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  font-size: 0.75rem !important;
+  font-weight: 500;
+}
+
+.issues-table {
+  font-size: 0.9rem !important;
+}
+
+

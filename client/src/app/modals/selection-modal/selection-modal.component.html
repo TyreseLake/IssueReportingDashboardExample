@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">
+    {{title}}
+  </h4>
+
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form #selectionForm="ngForm" id="selectionForm">
+    <div class="row px-2">
+      <ng-container *ngFor="let element of elements">
+        <div class="form-check col-12 col-md-6 mb-1">
+          <input type="checkbox"
+                class="form-check-input"
+                [checked]="selected[element]"
+                id="{{element}}"
+                name="{{element}}"
+                (change)="selected[element]=$event.target['checked']"
+                (change)="selectionForm.control.markAsTouched()">
+            <label class="form-check-label" for="{{element}}">
+              {{element}}
+            </label>
+        </div>
+      </ng-container>
+      <div class="col-12" *ngIf="errorMessage"><p class="text-danger m-0">{{errorMessage}}</p></div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+  <button type="button" class="btn btn-success" [disabled]="!selectionForm.touched" (click)="confirm()">Submit</button>
+</div>

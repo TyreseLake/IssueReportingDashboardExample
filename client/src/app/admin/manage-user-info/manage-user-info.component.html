@@ -1,0 +1,274 @@
+<div class="container-fluid pb-5 ps-3">
+  <h4 class="mt-2 mb-2">
+    <span class="text-primary-gradient">
+      User Details:
+    </span>
+  </h4>
+
+  <h6><a routerLink="/admin/user-manage" class="text-decoration-none text-secondary"><i class="fa fa-caret-left mt-2"></i> Back</a></h6>
+
+  <h4 class="text-primary ms-2">View/Edit User Information</h4>
+  <!-- <h4 class="text-primary ms-2">{{userDetails["firstName"] | titlecase}} {{userDetails["lastName"] | titlecase}}</h4> -->
+
+  <div class="row pe-2">
+    <form
+    [formGroup]="userDetailsForm"
+    (ngSubmit)="!updatingProfile && userDetailsForm.valid && saveUserDetails()"
+    autocomplete="off">
+      <table class="table mb-0">
+        <tbody *ngIf="(accountService.currentUser$ | async) as user">
+          <tr>
+            <td class="minimized-text text-muted" colspan="2"><span class="me-2" style="float: right;"><span class="me-2">User ID:</span>{{userDetails["id"]}}</span></td>
+          </tr>
+          <tr>
+            <td>User Name</td>
+            <td class="w-100 py-1">
+              <input class="form-control"
+                     type="text"
+                     formControlName="userName"
+                     placeholder="Please enter a user name"
+                     [ngClass]="{ 'is-invalid border-danger' : userDetailsForm.controls['userName']?.touched && userDetailsForm.controls['userName']?.invalid }">
+            </td>
+          </tr>
+          <tr>
+            <td>First Name</td>
+            <td class="py-1">
+              <input class="form-control"
+                     type="text"
+                     formControlName="firstName"
+                     placeholder="Please enter the user's first name"
+                     [ngClass]="{ 'is-invalid border-danger' : userDetailsForm.controls['firstName']?.touched && userDetailsForm.controls['firstName']?.invalid }">
+            </td>
+          </tr>
+          <tr>
+            <td>Last Name</td>
+            <td class="py-1">
+              <div class="form-group has-feedback d-flex">
+                <input class="form-control"
+                    type="text"
+                    formControlName="lastName"
+                    placeholder="none">
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td class="py-1">
+              <div class="form-group has-feedback d-flex">
+                <input class="form-control"
+                    type="text"
+                    formControlName="email"
+                    placeholder="none"
+                    [ngClass]="{ 'is-invalid border-danger' : userDetailsForm.controls['email']?.touched && userDetailsForm.controls['email']?.invalid }">
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Account Type</td>
+            <td  class="py-1">
+              <span *ngIf="user.userName != userDetails.userName">
+                <select name="status"
+                  formControlName="accountType"
+                  class="form-select"
+                  aria-label="Default select example">
+                  <option *ngFor="let type of accountTypes" [value]="type">{{type}}</option>
+                </select>
+              </span>
+              <span *ngIf="user.userName == userDetails.userName">
+                {{userDetails["accountType"]}}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td>Issue Type Access</td>
+            <td *ngIf="['Admin', 'Data Manager'].includes(userDetailsForm.controls['accountType']?.value)">
+              <span
+                class="text-muted">
+                  Not required for account type {{userDetailsForm.controls["accountType"].value | lowercase}}
+              </span>
+            </td>
+            <td
+              *ngIf="!['Admin', 'Data Manager'].includes(userDetailsForm.controls['accountType']?.value)"
+              class="py-1">
+              <div class="pt-1 pb-2">
+                <span *ngIf="allIssueTypes" class="text-primary">All</span>
+                <span *ngIf="!allIssueTypes" class="text-muted">Specified below</span>
+
+                <input class="ms-1 mt-1 form-check-input"
+                  type="checkbox"
+                  id="selectIssueTypes"
+                  name="selectIssueTypes"
+                  [(ngModel)]="allIssueTypes"
+                  (change)="(!$event.target['checked'])?resetIssueTypes():clearIssueTypes()"
+                  [ngModelOptions]="{standalone: true}">
+
+                <label for="selectIssueTypes" class="ms-1 text-muted">
+                  <span *ngIf="allIssueTypes">(un-check to specify Issue Types)</span>
+                  <span *ngIf="!allIssueTypes">(check for all)</span>
+                </label>
+              </div>
+
+              <div *ngIf="!allIssueTypes" class="d-md-flex">
+                <div style="width:300px">
+                  <div>
+                    <ng-container *ngIf="userDetailsForm.controls['issueTypesAccess']?.value?.length > 0">
+                      <ul class="list-group">
+                        <li class="list-group-item" style="max-width: 300px;" *ngFor="let issue of userDetailsForm.controls['issueTypesAccess']?.value">
+                          {{issue}}
+                        </li>
+                      </ul>
+                    </ng-container>
+                    <ng-container *ngIf=" userDetailsForm.controls['issueTypesAccess']?.value?.length <= 0">
+                      <div class="py-2">
+                      <span class="text-danger">* Please select this users Issue Type access</span>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="ms-md-1 px-1 py-2 text-center">
+                  <a class="text-primary text-decoration-none"
+                     style="cursor:pointer;"
+                     (click)="openIssueTypeModal()">
+                    <i class="p-0 fa fa-edit"></i>
+                    <span class="ms-1 d-md-none">Edit Issue Type Access</span>
+                    <!-- <span class="ms-1 d-none d-md-inline">Edit</span> -->
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>District Access</td>
+            <td *ngIf="['Admin', 'Data Manager'].includes(userDetailsForm.controls['accountType']?.value)">
+              <span
+                class="text-muted">
+                  Not required for account type {{userDetailsForm.controls['accountType'].value | lowercase}}
+              </span>
+            </td>
+            <td
+              *ngIf="!['Admin', 'Data Manager'].includes(userDetailsForm.controls['accountType']?.value)"
+              class="py-1">
+              <div class="pt-1 pb-2">
+                <span *ngIf="allDistricts" class="text-primary">All</span>
+                <span *ngIf="!allDistricts" class="text-muted">Specified below</span>
+
+                <input type="checkbox"
+                  class="ms-1 mt-1 form-check-input"
+                  id="selectedDistricts"
+                  name="selectedDistricts"
+                  [(ngModel)]="allDistricts"
+                  (change)="(!$event.target['checked'])?resetDistricts():clearDistricts()"
+                  [ngModelOptions]="{standalone: true}">
+
+                  <label for="selectedDistricts" class="ms-1 text-muted">
+                    <span *ngIf="allDistricts">(un-check to specify Districts)</span>
+                    <span *ngIf="!allDistricts">(check for all)</span>
+                  </label>
+              </div>
+
+              <div *ngIf="!allDistricts" class="d-md-flex">
+                <div style="width:300px">
+                  <ng-container *ngIf="userDetailsForm.controls['districtsAccess']?.value?.length > 0">
+                    <ul class="list-group">
+                      <li class="list-group-item" style="max-width: 300px;" *ngFor="let district of userDetailsForm.controls['districtsAccess']?.value">
+                        {{district}}
+                      </li>
+                    </ul>
+                  </ng-container>
+                  <ng-container *ngIf="userDetailsForm.controls['districtsAccess']?.value?.length <= 0">
+                    <div class="py-2">
+                      <span class="text-danger">* Please select this users District access</span>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="ms-md-1 px-1 py-2 text-center">
+                  <a class="text-primary text-decoration-none"
+                     style="cursor:pointer;"
+                     (click)="openDistrictModal()">
+                    <i class="p-0 fa fa-edit"></i>
+                    <span class="ms-1 d-md-none">Edit District Access</span>
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="mt-1">
+        <div class="row">
+          <div class="col-12 col-sm-10 col-md-8 col-lg-6 text-center">
+            <button
+              type="submit"
+              [disabled]="updatingProfile || !formChanged || userDetailsForm.invalid"
+              [class.btn-secondary]="!formChanged"
+              class="btn btn-sm btn-primary text-white px-3 py-1 border border-1 rounded-pill"
+              style="font-weight: bold; width: 100px;" type="submit">
+                Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <h4 class="mt-3 text-primary ms-2">Reset User Password</h4>
+
+  <div class="pe-2 row">
+    <form
+    [formGroup]="resetPasswordForm"
+    (ngSubmit)="!updatingProfile && resetPassword()"
+    autocomplete="off">
+      <table class="table mb-0">
+        <tbody>
+          <tr>
+            <td>Password</td>
+            <td class="w-100 py-1">
+              <input class="form-control"
+                    type="password"
+                    formControlName="password"
+                    placeholder="Enter password here"
+                    [ngClass]="{ 'border-info' : resetPasswordForm.controls['password']?.touched && resetPasswordForm.controls['password']?.valid}"
+                    [ngClass]="{ 'is-invalid border-danger' : resetPasswordForm.controls['password']?.touched && resetPasswordForm.controls['password']?.invalid }">
+              <ng-container *ngIf="resetPasswordForm.controls['password'].touched">
+                <p class="text-danger ms-1 mt-1 mb-0" *ngIf="resetPasswordForm.controls['password']?.errors?.['required']"><i class="fa fa-warning"></i> Required to enter password</p>
+                <p class="text-danger ms-1 mt-1 mb-0" *ngIf="resetPasswordForm.controls['password']?.errors?.['minlength']"><i class="fa fa-warning"></i> Password must be at least {{resetPasswordForm.controls['password']?.errors?.['minlength']['requiredLength']}}</p>
+                <p class="text-danger ms-1 mt-1 mb-0" *ngIf="resetPasswordForm.controls['password']?.errors?.['maxlength']"><i class="fa fa-warning"></i> Password must be at most {{resetPasswordForm.controls['password']?.errors?.['maxlength']['requiredLength']}}</p>
+              </ng-container>
+            </td>
+          </tr>
+          <tr>
+            <td>Retype Password</td>
+            <td class="py-1">
+              <input class="form-control"
+                    type="password"
+                    formControlName="confirmPassword"
+                    placeholder="Confirm the password entered"
+                    [ngClass]="{ 'border-info' : resetPasswordForm.controls['confirmPassword']?.touched && resetPasswordForm.controls['confirmPassword']?.valid }"
+                    [ngClass]="{ 'is-invalid border-danger' : resetPasswordForm.controls['confirmPassword']?.touched && resetPasswordForm.controls['confirmPassword']?.invalid }">
+              <ng-container *ngIf="resetPasswordForm.controls['confirmPassword'].touched">
+                <p class="text-danger ms-1 mt-1 mb-0" *ngIf="resetPasswordForm.controls['confirmPassword']?.errors?.['required']"><i class="fa fa-warning"></i> Required to confirm password</p>
+                <p class="text-danger ms-1 mt-1 mb-0" *ngIf="resetPasswordForm.controls['confirmPassword']?.errors?.['notMatching']"><i class="fa fa-warning"></i> Password does not match</p>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="mt-1">
+        <div class="row">
+          <div class="col-12 col-sm-10 col-md-8 col-lg-6 text-center">
+            <button
+              type="submit"
+              [disabled]="updatingProfile || !resetPasswordForm.dirty || resetPasswordForm.invalid"
+              [class.btn-secondary]="!resetPasswordForm.dirty || resetPasswordForm.invalid"
+              class="btn btn-sm btn-primary text-white px-3 py-1 border border-1 rounded-pill"
+              style="font-weight: bold; width: 100px;" type="submit">
+                Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

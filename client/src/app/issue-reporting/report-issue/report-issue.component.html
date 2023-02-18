@@ -1,0 +1,206 @@
+<div class="container-fluid pb-5 ps-3">
+  <form
+    [formGroup]="reportIssueForm"
+    (ngSubmit)="openSearchModal()"
+    autocomplete="off">
+
+    <h2 class="mt-2 mb-2">
+      <span class="text-primary-gradient">
+        <i class="fa fa-book"></i>
+        Report an Issue
+      </span>
+    </h2>
+
+    <p class="text-muted lead">Fill out the information below to make a new Issue Report.</p>
+
+    <div class="ps-2 row">
+      <div class="col col-12 col-md-11 col-lg-10 col-xl-8 p-1">
+        <div>
+          <app-select-input
+          [formControl]="$any(reportIssueForm.controls['platform'])"
+          [label]="'Platform'"
+          [options]="platforms"
+          ></app-select-input>
+        </div>
+
+        <div class="px-0 col-9 offset-3">
+          <div class="my-1">
+            <a  (click)="addOtherInfo == false ? addOtherInfo = true : addOtherInfo = false"
+                (click)="addOtherInfo == true && clearReporterInfo()"
+                class="ms-1 text-decoration-none"
+                role="button">
+              <span class="text-primary" *ngIf="!addOtherInfo"><span class="me-1 fa fa-sm fa-plus text-center" style="width:14px;"></span>Add Report Information</span>
+              <span class="text-muted" *ngIf="addOtherInfo"><span class="me-1 fa fa-sm fa-times text-center" style="width:14px;"></span>Remove Reporter Information</span>
+            </a>
+          </div>
+        </div>
+
+        <div @fadeInOutGrow class="bg-light rounded p-2"  *ngIf="addOtherInfo">
+          <div class="mt-2">
+            <app-text-input
+            [formControl]="$any(reportIssueForm.controls['phoneNumber'])"
+            [label]="'Phone Number'"
+            [leftAlignLabels]=true
+            [secondaryBorder]=true
+            ></app-text-input>
+          </div>
+
+          <div class="mt-2">
+            <app-text-input
+            [formControl]="$any(reportIssueForm.controls['email'])"
+            [label]="'Email'"
+            [leftAlignLabels]=true
+            [secondaryBorder]=true
+            ></app-text-input>
+          </div>
+
+          <div class="mt-2">
+            <app-text-input
+            [formControl]="$any(reportIssueForm.controls['address'])"
+            [label]="'Address'"
+            [leftAlignLabels]=true
+            [secondaryBorder]=true
+            ></app-text-input>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <app-select-input
+          [formControl]="$any(reportIssueForm.controls['issueType'])"
+          [label]="'Issue Type'"
+          [options]="issueTypes"
+          ></app-select-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(reportIssueForm.controls['subject'])"
+          [label]="'Subject'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(reportIssueForm.controls['description'])"
+          [label]="'Description'"
+          [placeholder]="'Please enter a description of the issue.'"
+          ></app-text-area-input>
+        </div>
+
+        <div class="mt-2" *ngIf="(accountService.currentUser$ | async) as user">
+          <app-select-input
+          [formControl]="$any(reportIssueForm.controls['district'])"
+          [label]="'District'"
+          [options]="districts"
+          [canSelectNone]="user.adminPrivileges"
+          ></app-select-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(reportIssueForm.controls['locationDescription'])"
+          [label]="'Location Description'"
+          [placeholder]="'Please enter a description of the location.'"
+          ></app-text-area-input>
+        </div>
+
+        <div *ngIf="apiLoaded | async" class="m-0 mt-2 row">
+          <div class="px-0 col-3 pt-1">
+            <label class="text-muted">Location Coordinates</label>
+          </div>
+          <div class="px-0 col-9">
+            <div class="my-1">
+              <a  (click)="useCoordinates == false ? useCoordinates = true : useCoordinates = false"
+                  (click)="useCoordinates == true && locationLng = null"
+                  (click)="useCoordinates == true && locationLat = null"
+                  class="ms-1 text-decoration-none"
+                  role="button">
+                <span class="text-primary" *ngIf="!useCoordinates"><span class="me-1 fa fa-sm fa-plus text-center" style="width:14px;"></span>Add Coordinates</span>
+                <span class="text-muted" *ngIf="useCoordinates"><span class="me-1 fa fa-sm fa-times text-center" style="width:14px;"></span>Remove Coordinates</span>
+              </a>
+            </div>
+            <div @fadeInOutGrow  style="max-width: 270px;"
+                *ngIf="useCoordinates"
+                class="border border-primary overflow-hidden rounded">
+              <google-map
+                [height]="mapHeight"
+                [width]="mapWidth"
+                [center]='{lat: (10.70), lng: (-61.22)}'
+                [options]="options"
+                (mapClick)="display($event)"
+                (mapClick)="selectionMarker.marker.setPosition({lat: $event['latLng'].lat(), lng: $event['latLng'].lng()})"
+                >
+                <map-marker [draggable]="true" #selectionMarker="mapMarker" (positionChanged)="setLocation(selectionMarker)"></map-marker>
+              </google-map>
+              <div class="text-center">
+                <span *ngIf="locationLat && locationLng" style="font-style: italic;" class="text-muted">({{locationLat | number:'1.1-6'}}, {{locationLng | number:'1.1-6'}})</span>
+                <span *ngIf="!(locationLat && locationLng)" style="font-style: italic;" class="text-muted">no location</span>
+              </div>
+            </div>
+
+            <div class="text-center" style="max-width: 270px;">
+              <!-- <span *ngIf="locationLat && locationLng" style="font-style: italic;" class="text-muted">({{locationLat | number:'1.1-6'}}, {{locationLng | number:'1.1-6'}})</span>
+              <span *ngIf="!(locationLat && locationLng)" style="font-style: italic;" class="text-muted">no location</span> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="m-0 mt-2 row">
+          <div class="px-0 col-3 pt-1">
+            <label class="text-muted">Images</label>
+          </div>
+          <div class="px-0 col-9">
+            <div class="my-1">
+              <a  (click)="useImages == true && selectedImages = null"
+                  (click)="useImages == false ? useImages = true : useImages = false"
+                  class="ms-1 text-decoration-none"
+                  role="button">
+                <span class="text-primary" *ngIf="!useImages"><span class="me-1 fa fa-sm fa-plus text-center" style="width:14px;"></span>Add Images</span>
+                <span class="text-muted" *ngIf="useImages"><span class="me-1 fa fa-sm fa-times text-center" style="width:14px;"></span>Remove Images</span>
+              </a>
+            </div>
+            <div @fadeInOutGrow
+              *ngIf="useImages">
+              <div class="d-flex align-items-center align-sm-items-start flex-column overflow-hidden">
+                <app-file-uploader
+                (filesEvent)="setImages($event)"
+                [allowedFileType]="'image'"
+                [selectMessage]="'Select images'"
+                [fileSelect]="true"
+                [queueLimit]="5"
+                ></app-file-uploader>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="mt-4 row">
+          <div class="col-12 mb-2 d-flex justify-content-center">
+            <button
+              type="success"
+              class="btn btn-primary text-white btn-sm border-0 rounded-pill"
+                style="width: 120px">Submit</button>
+          </div>
+        </div> -->
+
+        <div class="p-0 m-0 mt-3 row d-flex justify-content-center">
+          <div class="col-12 col-md-3 mb-2 d-flex justify-content-center">
+            <button type="submit"
+            class="btn bg-darkblue text-white btn-sm border-0 rounded-pill"
+            style="width: 140px">Submit</button>
+          </div>
+          <div class="col-12 col-md-3 mb-2 d-flex justify-content-center">
+            <button type="button"
+            class="btn btn-primary text-white btn-sm border-0 rounded-pill"
+            style="width: 140px" (click)="reportNewIssue()">Submit New</button>
+          </div>
+          <div class="col-12 col-md-3 mb-2 d-flex justify-content-center">
+            <button type="button" class="btn btn-secondary text-white btn-sm border-0 rounded-pill"
+            style="width: 140px" (click)="resetForm()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

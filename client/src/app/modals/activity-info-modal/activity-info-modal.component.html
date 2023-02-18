@@ -1,0 +1,88 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Activity Information</h4>
+
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <table class="table details-table table-sm table-borderless">
+    <tbody>
+      <tr>
+        <td class="text-muted">ID</td>
+        <td class="text-muted w-100" *ngIf="id">{{id}}</td>
+        <td class="text-muted w-100" *ngIf="!id" text-muted>No ID Provided</td>
+      </tr>
+      <tr>
+        <td>Action</td>
+        <td class="w-100" *ngIf="action">{{action}}</td>
+        <td class="w-100 text-muted" *ngIf="!action">No action performed</td>
+      </tr>
+      <tr>
+        <td>Action Group</td>
+        <td class="w-100" *ngIf="actionGroup">{{actionGroup}}</td>
+        <td class="w-100 text-muted" *ngIf="!actionGroup">Unknown</td>
+      </tr>
+      <tr>
+        <td>User Name</td>
+        <td class="w-100" *ngIf="userName">{{userName}}</td>
+        <td class="w-100 text-muted" *ngIf="!userName">None</td>
+      </tr>
+      <tr *ngIf="userName">
+        <td>Account Type</td>
+        <td class="w-100" *ngIf="accountType">{{accountType}}</td>
+        <td class="w-100 text-muted" *ngIf="!accountType">Unknown</td>
+      </tr>
+      <tr *ngIf="email">
+        <td>Email</td>
+        <td class="w-100" *ngIf="email">{{email}}</td>
+      </tr>
+      <tr *ngIf="ipAddress">
+        <td>Ip Address</td>
+        <td class="w-100" *ngIf="ipAddress">{{ipAddress}}</td>
+      </tr>
+      <tr>
+        <td>Activity Date</td>
+        <td class="w-100" *ngIf="activityDate">{{activityDate | date}}</td>
+        <td class="w-100 text-muted" *ngIf="!activityDate">Unknown</td>
+      </tr>
+      <!-- <tr>
+        <td>Completion Date</td>
+        <td class="w-100" *ngIf="completionDate">{{completionDate | date}}</td>
+        <td class="w-100 text-muted" *ngIf="!completionDate">Unknown</td>
+      </tr> -->
+      <tr *ngIf="completionDate && activityDate">
+        <td>Process Duration</td>
+        <td class="w-100" *ngIf="completionDate">
+          <span *ngIf="duration['hours']">{{duration['hours']}} hour<span *ngIf="duration['hours']!=1"></span>,</span>
+          <span *ngIf="duration['minutes']">{{duration['minutes']}} minute<span *ngIf="duration['minutes']!=1"></span>,</span>
+          <span>{{duration['seconds']}} second<span *ngIf="duration['seconds']!=1">s</span></span>
+        </td>
+      </tr>
+      <tr>
+        <td>Request Object</td>
+        <td class="w-100" *ngIf="dataObject"><div style="max-height: 300px; max-width: 330px; overflow: auto;"><code><pre style="overflow: visible">{{dataObject | json}}</pre></code></div></td>
+        <td class="w-100 text-muted" *ngIf="!dataObject">None</td>
+      </tr>
+      <tr>
+        <td>Result Status</td>
+        <td class="w-100">
+          <div class="px-3 text-white rounded-pill pill-body d-flex align-items-center" statusColor="{{status}}">
+            <span>{{status}}</span>
+          </div>
+        </td>
+        <td class="w-100 text-muted" *ngIf="!status">Unknown</td>
+      </tr>
+      <tr>
+        <td>Response Object</td>
+        <td class="w-100" *ngIf="responseObject"><div style="max-height: 300px; max-width: 330px; overflow: auto;"><code><pre style="overflow: visible">{{responseObject | json}}</pre></code></div></td>
+        <td class="w-100 text-muted" *ngIf="!responseObject">None</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="activityDate" class="modal-footer justify-content-center text-muted">
+  {{activityDate | timeago}}
+</div>

@@ -1,0 +1,374 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">{{titleText}}</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancelUpdate()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+
+  <form *ngIf="statusUpdateForm" [formGroup]="statusUpdateForm"
+    autocomplete="off">
+    <!-- Status Transition -->
+    <div class="m-0 row">
+      <div class="px-0 col-3 d-flex align-items-center">
+        <label class="text-muted">Current Status</label>
+      </div>
+      <div class="py-2 px-0 col-9 d-flex align-items-center">
+        <div
+          [class.desaturate]="statusUpdateForm?.controls['newStatus']?.value != '' && statusUpdateForm?.controls['newStatus']?.value != currentStatus"
+          class="px-2 text-white rounded-pill pill-body me-2"
+          statusColor="{{currentStatus}}">
+          <!-- <span>{{currentStatus}}</span> -->
+          <span class="d-lg-none">{{currentStatus | truncate:[14]}}</span>
+          <span class="d-none d-lg-block">{{currentStatus}}</span>
+        </div>
+        <ng-container *ngIf="statusUpdateForm?.controls['newStatus']?.value != '' && statusUpdateForm?.controls['newStatus']?.value != currentStatus">
+          <span class="fa fa-arrow-right text-muted"></span>
+          <div class="px-2 text-white rounded-pill pill-body ms-2" statusColor="{{statusUpdateForm?.controls['newStatus']?.value}}">
+            <!-- <span>{{statusUpdateForm?.controls['newStatus']?.value}}</span> -->
+            <span class="d-lg-none">{{statusUpdateForm?.controls['newStatus']?.value | truncate:[14]}}</span>
+            <span class="d-none d-lg-block">{{statusUpdateForm?.controls['newStatus']?.value}}</span>
+          </div>
+        </ng-container>
+        <!-- <div
+          class="px-3 text-white rounded-pill pill-body me-2"
+          statusColor="{{currentStatus}}">
+          <span>{{currentStatus}}</span>
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Select New Status -->
+    <div class="border-bottom pb-2" *ngIf="!preventStatusChange">
+      <app-select-input
+      [formControl]="$any(statusUpdateForm.controls['newStatus'])"
+      [label]="'New Status'"
+      [options]="statusList"
+      ></app-select-input>
+    </div>
+
+    <!-- Under Review Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'Under Review'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Started'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(statusUpdateForm.controls['responsibleUnit'])"
+          [label]="'Reviewer'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Additional Details'"
+          [placeholder]="'Enter additional details.'"
+          ></app-text-area-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Under Investiagtion Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'Under Investigation'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Started'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(statusUpdateForm.controls['responsibleUnit'])"
+          [label]="'Investigator'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Additional Details'"
+          [placeholder]="'Enter additional details.'"
+          ></app-text-area-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Awaiting Approval Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'Pending Approval'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Started'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <div class="row m-0">
+            <div class="px-0 col-3 pt-1">
+              <label class="text-muted">Approvals</label>
+            </div>
+
+            <div class="px-0 col-9">
+              <div class="text-center pt-1">
+                <ng-container *ngFor="let item of statusUpdateForm.controls['approvalItems']?.['controls']; let i  = index">
+                  <div class="input-group mb-2">
+                    <span class="input-group-text">{{i + 1}}</span>
+                    <span class="fa fa-times close-button text-muted" role="button" (click)="closeItem(i)"></span>
+                    <textarea type="text"
+                      [class.is-invalid]="item.touched && (item.value == null || item.value.trim() == '')"
+                      class="form-control"
+                      placeholder="Describe the item that requires approving.
+(e.g. what requires approval, who is involved, when this will be approved, etc.)"
+                      [rows]="3"
+                      [formControl]="item"></textarea>
+                  </div>
+                </ng-container>
+                <a class="w-auto text-primary text-center text-decoration-none" role="button" (click)="addItem()"><i class="fa fa-sm fa-plus"></i> Add Approval Items</a>
+                <div *ngIf="!(statusUpdateForm.controls['approvalItems']?.['controls'].length > 0)">
+                  <span class="text-muted" style="font-size: 0.8rem;">Add the items that require approving for this issue.</span>
+                </div>
+                <div *ngIf="statusUpdateForm.controls['approvalItems']?.touched && !(statusUpdateForm.controls['approvalItems']?.['controls'].length > 0)"
+                  class="ps-3 text-danger">
+                  <span class="error-text-body">At least (1) item should require approval.</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Approval Details'"
+          [placeholder]="'Enter any additional details for approvals.'"
+          ></app-text-area-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- In Progress Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'In Progress'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Started'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Details'"
+          [placeholder]="'Enter details of the work in progress'"
+          ></app-text-area-input>
+        </div>
+
+        <div class="mt-2">
+          <div class="row m-0">
+            <div class="col-3 px-0 text-muted">
+              Contract / Work Type
+            </div>
+            <div class="col-9 px-0">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="workType" [formControlName]="'workType'" [value]="'Internal'" id="internalCheckBox">
+                <label class="form-check-label" for="internalCheckBox">
+                  Internal
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="workType" [formControlName]="'workType'" [value]="'External'" id="externalCheckBox" checked>
+                <label class="form-check-label" for="externalCheckBox">
+                  External
+                </label>
+              </div>
+              <div *ngIf="statusUpdateForm.controls['workType']?.touched && statusUpdateForm.controls['workType']?.invalid" class="ps-3 text-danger">
+                <span class="error-text-body">Contract / Work Type is required</span>
+              </div>
+              <div>
+                <span class="text-muted" style="font-size: 0.8rem;">Specify wether the work is done internally or externally.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(statusUpdateForm.controls['responsibleUnit'])"
+          [label]="'Unit / Division / Contractor'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Paused/On Hold Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'Paused/On Hold'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Paused'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(statusUpdateForm.controls['reasonDetails'])"
+          [label]="'Reason for Pause'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Additional Details'"
+          [placeholder]="'Enter additional details.'"
+          ></app-text-area-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Cancelled Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'Cancelled'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Cancelled'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(statusUpdateForm.controls['reasonDetails'])"
+          [label]="'Reason for Cancellation'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Details of Cancellation'"
+          [placeholder]="'Enter details for the cancellation'"
+          ></app-text-area-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- No Remit Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'Not Within Ministry Remit'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Changed'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(statusUpdateForm.controls['reasonDetails'])"
+          [label]="'Reason for Change'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-input
+          [formControl]="$any(statusUpdateForm.controls['newUnit'])"
+          [label]="'Agency Responsible'"
+          [leftAlignLabels]=true
+          ></app-text-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Details of Change'"
+          [placeholder]="'Enter details for why this is not within ministry remit'"
+          ></app-text-area-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Completed Form -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value == 'Completed'">
+      <div>
+        <div class="mt-2">
+          <app-date-input
+          [label]="'Date Completed'"
+          [formControl]="$any(statusUpdateForm.controls['date'])"
+          [maxDate]="dateUpperLimmit"
+          ></app-date-input>
+        </div>
+
+        <div class="mt-2">
+          <app-text-area-input
+          [formControl]="$any(statusUpdateForm.controls['statusUpdateDetails'])"
+          [label]="'Additional Details'"
+          [placeholder]="'Enter additional details'"
+          ></app-text-area-input>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Additional Images -->
+    <ng-container *ngIf="statusUpdateForm.controls['newStatus']?.value && allowImages">
+      <div class="m-0 mt-2 row">
+        <div class="px-0 col-3 pt-1">
+          <label class="text-muted">Images</label>
+        </div>
+        <div class="px-0 col-9">
+          <div class="my-1">
+            <a  (click)="useImages == true && selectedImages = null"
+                (click)="useImages == false ? useImages = true : useImages = false"
+                class="ms-1 text-decoration-none"
+                role="button">
+              <span class="text-primary" *ngIf="!useImages"><span class="me-1 fa fa-sm fa-plus"></span>Add Images</span>
+              <span class="text-muted" *ngIf="useImages"><span class="me-1 fa fa-sm fa-times"></span>Remove Images</span>
+            </a>
+          </div>
+          <div @fadeInOutGrow
+            *ngIf="useImages">
+            <div class="d-flex align-items-center align-sm-items-start flex-column overflow-hidden">
+              <app-file-uploader
+              (filesEvent)="setImages($event)"
+              [allowedFileType]="'image'"
+              [selectMessage]="'Select images'"
+              [fileSelect]="true"
+              [queueLimit]="6"
+              ></app-file-uploader>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="cancelUpdate()">Cancel</button>
+  <!-- <button type="button" class="btn btn-success" [disabled]="!statusForm?.touched || statusForm?.invalid" (click)="statusUpdate()">Update</button> -->
+  <button type="button" class="btn btn-success" [disabled]="!statusUpdateForm?.touched" (click)="submitStatusUpdate()">Update</button>
+</div>

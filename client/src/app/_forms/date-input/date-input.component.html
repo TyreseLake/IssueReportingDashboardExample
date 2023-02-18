@@ -1,0 +1,26 @@
+<div class="form-group m-0 row">
+  <div class="px-0 col-3 d-flex align-items-center">
+    <label class="text-muted">{{label}}</label>
+  </div>
+  <div class="px-0 col-9">
+    <!--required bsDatepicker-->
+    <input
+      type="text"
+      [class.border-danger]="ngControl.touched && ngControl.invalid"
+      [class.is-invalid]="ngControl.touched && ngControl.invalid"
+      class="form-control border-primary"
+      [formControl]="$any(ngControl.control)"
+      placeholder="{{ label }}"
+      bsDatepicker
+      [bsConfig]="bsConfig"
+      [maxDate]="maxDate"
+    />
+
+    <div *ngIf="ngControl.control?.errors?.['required']" class="ps-3 invalid-feedback">
+      {{ label }} is required
+    </div>
+    <div *ngIf="ngControl.invalid && !ngControl.control?.errors?.['required']" class="ps-3 invalid-feedback">
+      {{ label }} is invalid
+    </div>
+  </div>
+</div>

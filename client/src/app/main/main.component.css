@@ -1,0 +1,94 @@
+.no-chart-overflow svg {
+  overflow: visible !important;
+}
+
+.border-top-primary {
+  border-left: 0;
+  border-bottom: 0;
+  border-right: 0;
+  border-top-width: 3px;
+  border-top-color: #11998e36;
+}
+
+.card-icon {
+  position: absolute;
+  top: 4px;
+  right: 7px;
+  font-size: 1.0rem;
+  z-index: 3;
+  color: rgba(17, 153, 142, 0.4);
+}
+
+.title-count {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #11998e;
+  background-color: #f3f3f3;
+  color: #11998e;
+  text-align: center;
+  min-width: 24px;
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  font-weight: bold;
+  float:right;
+  border-radius: 10px;
+}
+
+.issue-item{
+  border-bottom-style: solid;
+  border-color: rgba(128, 128, 128, 0.2);
+  border-width: 1px;
+  padding: 2px 1px;
+}
+
+.issue-item .head{
+  font-weight: 500;
+}
+
+.issue-item .date{
+  float: right;
+  font-size: 0.7rem;
+  vertical-align: middle;
+}
+
+.issue-items-container-empty{
+  font-size: 0.9rem;
+}
+
+.issue-items-container {
+  font-size: 0.9rem;
+  max-height: 400px;
+  overflow-y: auto;
+  line-height: 1.2;
+}
+
+.issue-items-container .issue-item:first-of-type {
+  border-top-style:solid;
+  border-color: rgba(128, 128, 128, 0.2);
+  border-width: 1px;
+}
+
+.issue-item-content {
+  padding: 0 6px;
+  border-left-style:solid;
+  border-color: rgba(17, 153, 142, 0.1);
+  border-width: 3px;
+}
+
+.issue-item-content:hover {
+  border-color: rgba(17, 153, 142, 0.6);
+}
+
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 2px;
+  font-size: 0.75rem !important;
+  font-weight: 500;
+}
+
+.desaturate {
+  filter: grayscale(1);
+}

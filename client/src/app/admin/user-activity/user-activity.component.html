@@ -1,0 +1,85 @@
+<div class="container-fluid ps-3">
+
+  <h2 class="mt-2 mb-2">
+    <span class="text-primary-gradient">
+      <i class="fa fa-clipboard"></i>
+      User Activity Log
+    </span>
+  </h2>
+  <p class="lead text-muted">Select a User's account to manage: </p>
+
+  <ng-container *ngIf="activity && activity?.length == 0">
+    <p class="text-muted">No activities logged.</p>
+  </ng-container>
+</div>
+
+<div class="table-responsive m-n5 p-0 pb-3" *ngIf="activity && activity?.length > 0">
+  <table class="table table-sm table-hover table-striped">
+    <thead class="text-primary">
+      <tr>
+        <th scope="col" class="text-center">Date</th>
+        <th scope="col" class="text-center">User</th>
+        <!-- <th scope="col" class="text-center">Ip Address</th> -->
+        <th scope="col" class="text-center">Action</th>
+        <th scope="col" class="text-center">Group</th>
+        <th scope="col" class="text-center">State</th>
+      </tr>
+    </thead>
+    <tbody @fadeInStagger>
+      <tr
+        *ngFor="let item of activity; let i = index" [attr.data-index]="i"
+        style="cursor: pointer;"
+        (click)="displayActivity(i)"
+        role="button">
+        <td>
+          <div>
+            <span class="text-primary align-middle">{{item["activityDate"] | date}} - {{item["activityDate"] | date:'shortTime'}}</span>
+            <span  class="text-secondary align-middle" style="font-size: small;"> ({{item["activityDate"] | timeago}})</span>
+          </div>
+        </td>
+        <td>
+          <span *ngIf="!item['userName']" class="text-muted">none</span>
+          <ng-container *ngIf="item['userName']">
+            <span  class="text-primary align-middle">
+              {{item['userName']}}
+              <span *ngIf="item['accountType']"> - {{item['accountType']}}</span>
+            </span>
+            <span *ngIf="item['email']" class="text-secondary align-middle" style="font-size: small;"> ({{item['email']}})</span>
+          </ng-container>
+        </td>
+        <!-- <td class="text-center">
+          <span  class="text-primary">{{item['ipAddress']}}</span>
+        </td> -->
+        <td class="text-center">
+          <span  class="text-primary">{{item['action']}}</span>
+        </td>
+        <td class="text-center">
+          <span  class="text-primary">{{item['actionGroup']}}</span>
+        </td>
+        <td style="vertical-align: middle;">
+          <div>
+            <div class="px-3 text-white rounded-pill pill-body d-flex align-items-center" statusColor="{{item['status']}}">
+              <span>{{item["status"]}}</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="d-flex justify-content-center mt-2" *ngIf="activity?.length > 0">
+  <pagination *ngIf="pagination"
+    [boundaryLinks]="true"
+    [totalItems]= "pagination.TotalItems"
+    [itemsPerPage]= "pagination.ItemsPerPage"
+    [maxSize]="7"
+    [(ngModel)]="pagination.CurrentPage"
+    (pageChanged)="pageChanged($event)"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;"
+  >
+  </pagination>
+</div>

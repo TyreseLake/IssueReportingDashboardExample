@@ -1,0 +1,19 @@
+.nv-file-over {
+  box-sizing: content-box;
+  border: dashed  2px #11998e !important;
+  color: #11998e !important;
+}
+
+.my-drop-zone {
+  box-sizing: content-box;
+  border: dashed  2px rgb(190, 190, 190);
+  color: rgb(190, 190, 190);
+}
+
+.upload-area {
+  width: 180px;
+}
+
+input[type=file] {
+  color: trasperent;
+}

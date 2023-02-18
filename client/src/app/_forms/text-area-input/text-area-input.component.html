@@ -1,0 +1,15 @@
+<div class="form-group m-0 row">
+  <div class="px-0 col-3 pt-1">
+    <label class="text-muted">{{label}}</label>
+  </div>
+  <div class="px-0 col-9">
+    <textarea
+      class = "form-control border-primary"
+      [class.is-invalid] = 'ngControl.touched && ngControl.invalid'
+      [class.border-danger] = '(ngControl.touched && ngControl.invalid)'
+      [ngClass] ="{'border border-2 border-top-0 border-end-0 border-start-0 rounded-0' : style == 1}"
+      [formControl] = "$any(ngControl.control)"
+      [rows] = "rows"
+      [placeholder]="placeholder"></textarea>
+  </div>
+</div>

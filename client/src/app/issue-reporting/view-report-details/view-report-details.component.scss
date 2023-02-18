@@ -1,0 +1,72 @@
+.details-table tr td:first-child{
+  white-space: nowrap !important;
+  font-weight: bold;
+  color: #11998e;
+}
+
+.card {
+  max-width: 800px;
+}
+
+.card td {
+  padding-top: 0px;
+  padding-bottom: 2px;
+}
+
+.nav-tabs .nav-link{
+  font-weight: bold !important;
+  color: #495057 !important;
+}
+
+.nav-tabs .nav-link.active{
+  color: #11998e !important;
+}
+
+.select-box {
+  position:absolute;
+  right: 0;
+}
+
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.bg-editing {
+  background-color: rgb(216, 231, 231);
+}
+
+.map-container {
+  display: flex;
+  justify-content: center;
+}
+
+.map-coordinates {
+  font-style: italic;
+  width: 100% !important;
+  max-width: 500px !important;
+  font-weight: normal;
+}
+
+.map-container {
+  width: 100% !important;
+  max-width: 500px !important;
+  box-shadow: 0.125rem 0.125rem 0.15rem rgb(0 0 0 / 10%) !important;
+}
+
+.minimized-text {
+  font-size: 0.8rem;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+// @media (min-width: 576px) {
+
+// }
+// @media (max-width: 575px) {
+//   .map-container {
+//     width: 100% !important;
+//   }
+// }

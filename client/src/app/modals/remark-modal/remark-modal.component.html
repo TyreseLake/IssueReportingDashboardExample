@@ -1,0 +1,65 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Add Remark</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <!-- <form #addRemarkForm="ngForm" id="addRemarkForm">
+    <div class="form-group row">
+      <div class="col-3 d-flex align-items-center">
+        <label class="text-muted">Category</label>
+      </div>
+      <div class="col-9 ps-1">
+        <div class="input-group">
+          <select
+            class="form-control border border-2 border-top-0 border-end-0 border-start-0 rounded-0 border-primary"
+            name="type"
+            [(ngModel)]="type">
+            <option value="Private" selected>Private</option>
+            <option value="General" >General</option>
+          </select>
+          <span class="input-group-text bg-transparent border border-primary border-2 border-top-0 border-start-0 border-end-0 rounded-0 text-primary" id="inputGroupPrepend2"><i class="fa fa-angle-down"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-3 pt-1">
+        <label class="text-muted">Remark</label>
+      </div>
+      <div class="col-9 ps-1">
+        <textarea
+          class="form-control border border-primary border-2 border-top-0 border-start-0 rounded-0 border-end-0"
+          name="data"
+          [(ngModel)]="data"
+          rows="3"
+          placeholder="Enter your remark here"></textarea>
+      </div>
+    </div>
+  </form> -->
+
+  <form [formGroup]="userRemarkForm"
+        autocomplete="off">
+    <div>
+      <app-select-input
+      [formControl]="$any(userRemarkForm.controls['type'])"
+      [label]="'Category'"
+      [options]="['Private', 'General']"
+      ></app-select-input>
+    </div>
+
+    <div class="mt-2">
+      <app-text-area-input
+      [formControl]="$any(userRemarkForm.controls['data'])"
+      [label]="'Remark'"
+      [placeholder]="'Enter your remark here.'"
+      ></app-text-area-input>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+  <button type="button" class="btn btn-success" [disabled]="!userRemarkForm?.touched" (click)="addNewRemark()">Submit</button>
+  <!-- <button type="button" class="btn btn-success" [disabled]="!addRemarkForm.touched" (click)="addNewRemark()">Submit</button> -->
+</div>

@@ -1,0 +1,304 @@
+<div class="modal-header text-center">
+  <h4 class="modal-title pull-left">Existing Issue Reports</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body p-0">
+
+  <div class="mt-2 px-1">
+    <tabset class="status-tabset" #statusTabs>
+      <tab heading='Suggested'>
+        <div>
+          <div class="py-1 px-3 border-bottom mb-1">
+            <div #searchArea>
+              <ng-container *ngIf="searchInfo">
+                <!-- <span class="d-block text-secondary" >Search Criteria: </span> -->
+
+
+                <!-- <a class="text-decoration-none d-flex align-items-center"
+                  role="button"
+                  style="font-weight: normal;"
+                  (click)="toggleCriteria()">
+                  <span *ngIf="!showCriteria" class="d-flex align-items-center"><span class="fa fa-plus me-1 align-middle"></span>Show Search Criteria</span>
+                  <span *ngIf="showCriteria" class="d-flex align-items-center text-muted"><span class="fa fa-close me-1 align-middle"></span>Hide Search Criteria</span>
+                </a> -->
+
+                <a class="text-decoration-none d-flex align-items-center"
+                  role="button"
+                  style="font-weight: normal;"
+                  (click)="!showCriteria ? showCriteria = true : showCriteria = false">
+                  <span *ngIf="!showCriteria" class="d-flex align-items-center"><span class="fa fa-plus me-1 align-middle"></span>Show Search Criteria</span>
+                  <span *ngIf="showCriteria" class="text-muted d-flex align-items-center"><span class="fa fa-close me-1 align-middle"></span>Hide Search Criteria</span>
+                </a>
+
+
+                <ng-container *ngIf="showCriteria">
+                  <div @fadeInStagger>
+                    <div class="d-inline me-2 w-auto" *ngIf="searchInfo['issueType']"><span class="text-primary">Issue Type: </span>{{searchInfo['issueType']}}</div>
+                    <div class="d-inline me-2 w-auto" *ngIf="searchInfo['district']"><span class="text-primary">District: </span>{{searchInfo['district']}}</div>
+                    <div class="d-inline me-2 w-auto" *ngIf="searchInfo['subject']" title="{{searchInfo['subject']}}"><span class="text-primary">Subject: </span>{{searchInfo['subject'] | truncate:[50]}}</div>
+                    <div class="d-inline me-2 w-auto" *ngIf="searchInfo['description']" title="{{searchInfo['description']}}"><span class="text-primary">Description: </span>{{searchInfo['description'] | truncate:[50]}}</div>
+                    <div class="d-inline me-2 w-auto" *ngIf="searchInfo['locationDescription']" title="{{searchInfo['locationDescription']}}"><span class="text-primary">Location Description: </span>{{searchInfo['locationDescription'] | truncate:[50]}}</div>
+                    <div class="d-inline me-2 w-auto" *ngIf="searchInfo['locationLat'] && searchInfo['locationLng']"><span class="text-primary">Coordinates: </span><span style="font-style: italic;" class="text-muted">({{searchInfo['locationLat'] | number:'1.1-6'}}, {{searchInfo['locationLng'] | number:'1.1-6'}})</span></div>
+                  </div>
+                </ng-container>
+
+              </ng-container>
+            </div>
+            <div *ngIf="searchArea.innerText == ''">
+              <span class="text-muted">No search info was entered.</span>
+            </div>
+          </div>
+
+          <div>
+            <h6 class="text-primary ms-3 mt-2 mb-0">Similar issue reports: </h6>
+
+            <!-- <div *ngIf="issueStatuses?.length > 0" class="table-responsive p-0 issues-table">
+              <table class="table table-sm table-hover table-striped">
+                <thead class="text-primary">
+                  <tr>
+                    <th scope="col" class="text-center align-middle">Type</th>
+                    <th scope="col" class="text-center align-middle">Location</th>
+                    <th scope="col" class="text-center align-middle">Date Reported</th>
+                    <th scope="col" class="text-center align-middle">No. of Reports</th>
+                    <th scope="col" class="text-center align-middle">Status</th>
+                    <th scope="col" class="text-center align-middle">Report ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    [hidden] = "loading"
+                    *ngFor="let issueStatus of issueStatuses"
+                    (click)="selected == issueStatus.id && openLink(issueStatus.id)"
+                    [class.table-info]="selected == issueStatus.id"
+                    (click)="selected = issueStatus.id"
+                    role="button">
+                    <td class="text-center">
+                      {{issueStatus.issueType}}
+                    </td>
+                    <td class="long-text" title="{{issueStatus.locationDescription}}">
+                      <ng-container *ngIf="issueStatus.locationDescription">
+                        <span class="d-md-none">{{issueStatus.locationDescription | truncate:[50]}}</span>
+                        <span class="d-none d-md-block">{{issueStatus.locationDescription | truncate:[150]}}</span>
+                      </ng-container>
+                      <span *ngIf="!issueStatus.locationDescription" class="text-muted">Not Specified</span>
+                    </td>
+                    <td class="text-center">
+                      {{issueStatus.dateReported | date}}
+                    </td>
+                    <td class="text-center">
+                      <span class="bg-primary px-2 text-white rounded align-middle">{{issueStatus.issueReportCount}}</span>
+                    </td>
+                    <td>
+                      <div class="text-center d-flex justify-content-center">
+                        <span class="px-3 text-white rounded-pill pill-body d-flex align-items-center" statusColor="{{issueStatus.status}}" title="{{issueStatus.status}}">
+                          <span class="d-xl-none">{{issueStatus.status | truncate:[8]}}</span>
+                          <span class="d-none d-xl-block">{{issueStatus.status}}</span>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      {{issueStatus.id}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            -->
+
+            <div *ngIf="issueStatuses?.length > 0" class="mb-3">
+              <app-issues-table
+                [issueStatuses] = issueStatuses
+                [selected] = selected
+                (selectEvent)="setSelected($event)"
+              ></app-issues-table>
+            </div>
+
+            <div *ngIf="issueStatuses?.length == 0" class="px-3 pb-2 border-bottom">
+              <span class="text-muted">No exisiting issue reports found.</span>
+            </div>
+          </div>
+
+          <h6 class="text-primary ms-3 mt-2 mb-0">Nearby issue reports: </h6>
+
+          <!-- <div *ngIf="nearByIssueStatuses?.length > 0" class="table-responsive p-0 issues-table">
+            <table class="table table-sm table-hover table-striped">
+              <thead class="text-primary">
+                <tr>
+                  <th scope="col" class="text-center align-middle">Type</th>
+                  <th scope="col" class="text-center align-middle">Location</th>
+                  <th scope="col" class="text-center align-middle">Date Reported</th>
+                  <th scope="col" class="text-center align-middle">No. of Reports</th>
+                  <th scope="col" class="text-center align-middle">Status</th>
+                  <th scope="col" class="text-center align-middle">Report ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  [hidden] = "loading"
+                  *ngFor="let issueStatus of nearByIssueStatuses"
+                  [class.table-info]="selected == issueStatus.id"
+                  (click)="selected = issueStatus.id"
+                  role="button">
+                  <td class="text-center">
+                    {{issueStatus.issueType}}
+                  </td>
+                  <td class="long-text">
+                    <ng-container *ngIf="issueStatus.locationDescription">
+                      <span class="d-md-none" title="{{issueStatus.locationDescription}}">{{issueStatus.locationDescription | truncate:[50]}}</span>
+                      <span class="d-none d-md-block">{{issueStatus.locationDescription | truncate:[150]}}</span>
+                    </ng-container>
+                    <span *ngIf="!issueStatus.locationDescription" class="text-muted">Not Specified</span>
+                  </td>
+                  <td class="text-center">
+                    {{issueStatus.dateReported | date}}
+                  </td>
+                  <td class="text-center">
+                    <span class="bg-primary px-2 text-white rounded align-middle">{{issueStatus.issueReportCount}}</span>
+                  </td>
+                  <td>
+                    <div class="text-center d-flex justify-content-center">
+                      <span class="px-3 text-white rounded-pill pill-body d-flex align-items-center" statusColor="{{issueStatus.status}}" title="{{issueStatus.status}}">
+                        <span class="d-xl-none">{{issueStatus.status | truncate:[8]}}</span>
+                        <span class="d-none d-xl-block">{{issueStatus.status}}</span>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    {{issueStatus.id}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+
+          <div *ngIf="nearByIssueStatuses?.length > 0"  class="mb-3">
+            <app-issues-table
+              [issueStatuses] = nearByIssueStatuses
+              [selected] = selected
+              (selectEvent)="setSelected($event)"
+            ></app-issues-table>
+          </div>
+
+          <div *ngIf="nearByIssueStatuses?.length == 0" class="px-3 pb-2">
+            <span class="text-muted">No nearby issue reports found.</span>
+          </div>
+
+          <div *ngIf="!nearByIssueStatuses" class="px-3 pb-2">
+            <span class="text-muted">No coordinates provided. </span>
+          </div>
+
+          <!-- <div class="d-flex justify-content-center" *ngIf="issueStatuses?.length > 0">
+            <pagination *ngIf="pagination"
+              [boundaryLinks]="true"
+              [totalItems]= "pagination.TotalItems"
+              [itemsPerPage]= "pagination.ItemsPerPage"
+              [maxSize]="7"
+              [(ngModel)]="pagination.CurrentPage"
+              (pageChanged)="pageChanged($event)"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+          </div> -->
+        </div>
+      </tab>
+      <tab heading='All'>
+        <!-- <div class="table-responsive p-0 issues-table">
+          <table class="table table-sm table-hover table-striped">
+            <thead class="text-primary">
+              <tr>
+                <th scope="col" class="text-center align-middle">Type</th>
+                <th scope="col" class="text-center align-middle">Location</th>
+                <th scope="col" class="text-center align-middle">Date Reported</th>
+                <th scope="col" class="text-center align-middle">No. of Reports</th>
+                <th scope="col" class="text-center align-middle">Status</th>
+                <th scope="col" class="text-center align-middle">Report ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                [hidden] = "loading"
+                *ngFor="let issueStatus of allIssueStatuses"
+                [class.table-info]="selected == issueStatus.id"
+                (click)="selected = issueStatus.id"
+                role="button">
+                <td class="text-center">
+                  {{issueStatus.issueType}}
+                </td>
+                <td class="long-text" title="{{issueStatus.locationDescription}}">
+                  <ng-container *ngIf="issueStatus.locationDescription" >
+                    <span class="d-md-none">{{issueStatus.locationDescription | truncate:[50]}}</span>
+                    <span class="d-none d-md-block">{{issueStatus.locationDescription | truncate:[150]}}</span>
+                  </ng-container>
+                  <span *ngIf="!issueStatus.locationDescription" class="text-muted">Not Specified</span>
+                </td>
+                <td class="text-center">
+                  {{issueStatus.dateReported | date}}
+                </td>
+                <td class="text-center">
+                  <span class="bg-primary px-2 text-white rounded align-middle">{{issueStatus.issueReportCount}}</span>
+                </td>
+                <td >
+                  <div class="text-center d-flex justify-content-center">
+                    <span class="px-3 text-white rounded-pill pill-body d-flex align-items-center" title="{{issueStatus.status}}" statusColor="{{issueStatus.status}}">
+                      <span class="d-xl-none">{{issueStatus.status | truncate:[8]}}</span>
+                      <span class="d-none d-xl-block">{{issueStatus.status}}</span>
+                    </span>
+                  </div>
+                </td>
+                <td class="text-center">
+                  {{issueStatus.id}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
+
+        <div *ngIf="allIssueStatuses?.length > 0"  >
+          <app-issues-table
+            [issueStatuses] = allIssueStatuses
+            [selected] = selected
+            (selectEvent)="setSelected($event)"
+          ></app-issues-table>
+
+          <div class="d-flex justify-content-center mt-2" *ngIf="allIssueStatuses?.length > 0">
+            <pagination *ngIf="pagination"
+              [boundaryLinks]="true"
+              [totalItems]= "pagination.TotalItems"
+              [itemsPerPage]= "pagination.ItemsPerPage"
+              [maxSize]="7"
+              [(ngModel)]="pagination.CurrentPage"
+              (pageChanged)="pageChanged($event)"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+          </div>
+        </div>
+
+        <div class="ps-3 py-3" *ngIf="allIssueStatuses?.length == 0">
+          <span class="text-muted">
+            No issue reports found.
+          </span>
+        </div>
+
+
+      </tab>
+    </tabset>
+  </div>
+
+
+
+
+</div>
+<div class="modal-footer d-flex">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+  <button class="btn bg-darkblue" (click)="selectNew()">New Issue</button>
+  <button type="button" class="btn btn-success" [disabled]="!selected" (click)="selectIssue()">Add to Selected</button>
+</div>

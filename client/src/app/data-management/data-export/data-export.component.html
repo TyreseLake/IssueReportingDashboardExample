@@ -1,0 +1,460 @@
+<div class="container-fluid ps-3">
+  <h2 class="mt-2 mb-2">
+    <span class="text-primary-gradient">
+      <i class="fa fa-download"></i>
+      Export Data
+    </span>
+  </h2>
+
+  <ng-container *appDataManagementPrivileges>
+    <p class="text-muted lead mb-1">Export Issues for CMS upload (Mobile Application)</p>
+
+    <div class="row">
+      <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex align-items-center align-sm-items-start flex-column">
+        <div class="row">
+          <div class="d-flex align-sm-items-start flex-column align-items-center">
+              <button
+                class="btn btn-primary text-white btn-sm border-0 rounded-pill"
+                style="width: 120px"
+                (click)="exportIssueReports()"
+              >
+                Export Reports
+              </button>
+              <!-- <div class="mt-1 text-muted">
+                Export Issue Reports to CSV for CMS upload
+              </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <p class="text-muted lead mt-3 mb-1">Export Issue Reporting Data (Excel)</p>
+
+  <div class="row">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex align-items-center align-sm-items-start flex-column">
+      <div class="row">
+        <div class="d-flex align-sm-items-start flex-column align-items-center">
+          <button
+            class="btn btn-primary text-white btn-sm border-0 rounded-pill"
+            style="width: 120px"
+            (click)="openModal(exportFormModal)"
+            (click)="!dataLoaded && loadData()"
+          >
+            Export File
+          </button>
+          <div class="mt-1 text-muted" style="font-size: 0.9rem">
+            Export data to excel (.xlsx)
+          </div>
+          <!-- <div class="mt-1 text-muted">
+            Export Issue Reports to CSV for CMS upload
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #exportFormModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Export Issue Reporting Data (Excel)</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancelExport()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body px-3">
+    <form *ngIf="exportForm" [formGroup]="exportForm"
+      autocomplete="off">
+
+      <!-- <div class="mt-2">
+        <div class="row m-0">
+          <div class="col-3 px-0 text-muted">
+            Type
+          </div>
+          <div class="col-9 px-0">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="exportType" [formControlName]="'exportType'" [value]="'issueReport'" id="reportsCheckBox" checked>
+              <label class="form-check-label" for="reportsCheckBox">
+                Issue Reports
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="exportType" [formControlName]="'exportType'" [value]="'issueStatus'" id="issuesCheckBox" >
+              <label class="form-check-label" for="issuesCheckBox">
+                Issues
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="exportType" [formControlName]="'exportType'" [value]="'statusUpdate'" id="updatesCheckBox" >
+              <label class="form-check-label" for="updatesCheckBox">
+                Status Updates
+              </label>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Export Type -->
+      <div>
+        <div class="row m-0">
+          <div class="col-12 px-0">
+            What would you like to export?
+          </div>
+          <div class="col-12 px-0 mt-1">
+            <div class="input-group" (change)="clearSelected()">
+              <select class="form-select border "
+                  #selectArea
+                  [formControlName] = "'exportType'">
+                <option value="issueReport" selected>Issue Reports</option>
+                <option value="issueStatus">Issues</option>
+                <option value="statusUpdate">Status Updates</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <span class="text-muted" style="font-size: 0.9rem">Options: </span>
+      </div>
+
+      <ng-container *ngIf="['issueReport', 'issueStatus'].includes(exportForm?.controls['exportType']?.value)">
+        <!-- Date Range -->
+        <div class="row m-0">
+          <div class="col-3 pt-1 px-0">
+            Date Range:
+          </div>
+          <div class="col-9 px-0">
+            <div class="form-check form-switch mt-1">
+              <input class="form-check-input" type="checkbox" role="button" #dateSwitch
+              (click)="exportForm?.controls['dateLower'].reset()"
+              (click)="exportForm?.controls['dateUpper'].reset()">
+            </div>
+            <div *ngIf="dateSwitch.checked" class="row m-0">
+              <div class="col-6 p-0 pe-1">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    [class.border-danger]="false"
+                    [class.is-invalid]="false"
+                    class="form-control border"
+                    [formControlName]="'dateLower'"
+                    placeholder="After"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+                    [maxDate]="dateUpperLimmit"
+                  />
+                </div>
+              </div>
+              <div class="col-6 p-0 ps-1">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    [class.border-danger]="false"
+                    [class.is-invalid]="false"
+                    class="form-control border"
+                    [formControlName]="'dateUpper'"
+                    placeholder="Before"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+                    [maxDate]="dateUpperLimmit"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Issue Types -->
+        <div class="row m-0 mt-1">
+          <div class="col-3 p-0 pt-1">
+            <span>Issue Types: </span>
+          </div>
+
+          <div class="col-9 px-0 row m-0">
+            <div class="col-12 form-check form-switch mt-1">
+              <input class="form-check-input" type="checkbox" #issueTypeSwitch (click)="clearIssueTypeChecklist()">
+            </div>
+
+            <ng-container *ngIf="issueTypeSwitch.checked">
+              <div  class="col-6 p-0 pe-1 d-flex align-items-center">
+                <div class="dropdown w-100" dropdown>
+                  <button class="form-select btn btn-light bg-white border w-100 d-flex align-items-center justify-content-between" dropdownToggle>
+                    <span class="align-text-bottom">Issue Types </span>
+                  </button>
+
+                  <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+                    <form class="px-3 py-1">
+                      <div class="form-group mb-1 ">
+                        <div class="input-group input-group-sm">
+                          <input type="text"
+                                  class="form-control"
+                                  placeholder="Search"
+                                  [(ngModel)]="searchIssueTypes"
+                                  [ngModelOptions]="{standalone: true}">
+                          <span class="input-group-text bg-transparent" disabled>
+                            <i class="fa fa-search"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <ng-container *ngIf="issueTypes?.length > 0">
+                        <div class="overflow-auto" style="max-height: 250px;">
+                          <ng-container *ngFor="let type of issueTypes">
+                            <ng-container *ngIf="!searchIssueTypes || searchIssueTypes == '' || type.toUpperCase().includes(searchIssueTypes.toLocaleUpperCase())">
+                              <div class="form-check">
+                                  <input type="checkbox"
+                                        class="form-check-input"
+                                        id="{{type}}"
+                                        value="{{type}}"
+                                        [checked]="selectedIssueTypesSet.has(type)"
+                                        (change)="updateIssueTypeChecklist($event)"
+                                        (change)="exportForm.markAsDirty">
+                                  <label class="form-check-label" for="{{type}}">
+                                    {{type}}
+                                  </label>
+                              </div>
+                            </ng-container>
+                          </ng-container>
+                        </div>
+                      </ng-container>
+                      <div class="mt-1 text-center">
+                        <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                                (click)="clearIssueTypeChecklist()">
+                          Clear
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 p-0 ps-1 d-flex align-items-center">
+                <div><span [class.text-primary]="selectedIssueTypesSet.size > 0" [class.text-muted]="selectedIssueTypesSet.size==0" class="ps-2" >{{selectedIssueTypesSet.size}} Selected</span></div>
+              </div>
+            </ng-container>
+
+
+          </div>
+        </div>
+
+        <!-- Districts -->
+        <div class="row m-0 mt-1">
+          <div class="col-3 p-0 pt-1">
+            <span>Districts: </span>
+          </div>
+
+          <div class="col-9 px-0 row m-0">
+            <div class="col-12 form-check form-switch mt-1">
+              <input class="form-check-input" type="checkbox" #districtSwitch (click)="clearDistrictChecklist()">
+            </div>
+
+            <ng-container *ngIf="districtSwitch.checked">
+              <div  class="col-6 p-0 pe-1 d-flex align-items-center">
+                <div class="dropdown w-100" dropdown>
+                  <button class="form-select btn btn-light bg-white border w-100 d-flex align-items-center justify-content-between" dropdownToggle>
+                    <span class="align-text-bottom">Districts</span>
+                  </button>
+
+                  <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+                    <form class="px-3 py-1">
+                      <div class="form-group mb-1 ">
+                        <div class="input-group input-group-sm">
+                          <input type="text"
+                                  class="form-control"
+                                  placeholder="Search"
+                                  [(ngModel)]="searchDistricts"
+                                  [ngModelOptions]="{standalone: true}">
+                          <span class="input-group-text bg-transparent" disabled>
+                            <i class="fa fa-search"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <ng-container *ngIf="districts?.length > 0">
+                        <div class="overflow-auto" style="max-height: 250px;">
+                          <ng-container *ngFor="let type of districts">
+                            <ng-container *ngIf="!searchDistricts || searchDistricts == '' || type.toUpperCase().includes(searchDistricts.toLocaleUpperCase())">
+                              <div class="form-check">
+                                  <input type="checkbox"
+                                        class="form-check-input"
+                                        id="{{type}}"
+                                        value="{{type}}"
+                                        [checked]="selectedDistrictsSet.has(type)"
+                                        (change)="updateDistrictChecklist($event)"
+                                        (change)="exportForm.markAsDirty">
+                                  <label class="form-check-label" for="{{type}}">
+                                    {{type}}
+                                  </label>
+                              </div>
+                            </ng-container>
+                          </ng-container>
+                        </div>
+                      </ng-container>
+                      <div class="mt-1 text-center">
+                        <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                                (click)="clearDistrictChecklist()">
+                          Clear
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 p-0 ps-1 d-flex align-items-center">
+                <div><span [class.text-primary]="selectedDistrictsSet.size > 0" [class.text-muted]="selectedDistrictsSet.size==0" class="ps-2" >{{selectedDistrictsSet.size}} Selected</span></div>
+              </div>
+            </ng-container>
+
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="row m-0 mt-1">
+          <div class="col-3 p-0 pt-1">
+            <span>Status: </span>
+          </div>
+
+          <div class="col-9 px-0 row m-0">
+            <div class="col-12 form-check form-switch mt-1">
+              <input class="form-check-input" type="checkbox" #statusSwitch (click)="clearStatusChecklist()">
+            </div>
+
+            <ng-container *ngIf="statusSwitch.checked">
+              <div  class="col-6 p-0 pe-1 d-flex align-items-center">
+                <div class="dropdown w-100" dropdown>
+                  <button class="form-select btn btn-light bg-white border w-100 d-flex align-items-center justify-content-between" dropdownToggle>
+                    <span class="align-text-bottom">Statuses</span>
+                  </button>
+
+                  <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+                    <form class="px-3 py-1">
+                      <div class="form-group mb-1 ">
+                        <div class="input-group input-group-sm">
+                          <input type="text"
+                                  class="form-control"
+                                  placeholder="Search"
+                                  [(ngModel)]="searchStatus"
+                                  [ngModelOptions]="{standalone: true}">
+                          <span class="input-group-text bg-transparent" disabled>
+                            <i class="fa fa-search"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <ng-container *ngIf="statusList?.length > 0">
+                        <div class="overflow-auto" style="max-height: 250px;">
+                          <ng-container *ngFor="let type of statusList">
+                            <ng-container *ngIf="!searchStatus || searchStatus == '' || type.toUpperCase().includes(searchStatus.toLocaleUpperCase())">
+                              <div class="form-check">
+                                  <input type="checkbox"
+                                        class="form-check-input"
+                                        id="{{type}}"
+                                        value="{{type}}"
+                                        [checked]="selectedStatusesSet.has(type)"
+                                        (change)="updateStatusChecklist($event)"
+                                        (change)="exportForm.markAsDirty">
+                                  <label class="form-check-label" for="{{type}}">
+                                    {{type}}
+                                  </label>
+                              </div>
+                            </ng-container>
+                          </ng-container>
+                        </div>
+                      </ng-container>
+                      <div class="mt-1 text-center">
+                        <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                                (click)="clearStatusChecklist()">
+                          Clear
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6 p-0 ps-1 d-flex align-items-center">
+                <div><span [class.text-primary]="selectedStatusesSet.size > 0" [class.text-muted]="selectedStatusesSet.size==0" class="ps-2" >{{selectedStatusesSet.size}} Selected</span></div>
+              </div>
+            </ng-container>
+
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="['statusUpdate'].includes(exportForm?.controls['exportType']?.value)">
+        <!-- Issue -->
+        <div class="mt-1">
+          <div class="row m-0">
+            <div class="col-3 px-0">
+              Issue:
+            </div>
+            <div class="col-9 px-0">
+              <button (click)="openStatusModal()"
+                [disabled]="selected"
+                [class.text-muted]="selected"
+                class="ms-1 p-0 btn btn-white text-primary">
+                <span class="me-1 fa fa-sm fa-plus text-center" style="width: 12.5px"></span>Select Issue
+              </button>
+
+              <div *ngIf="selected" class="mt-2 col-12 issue-item">
+                <div
+                  [class.issue-item-content-error]="selectedIssue['statusUpdateCount'] == 0"
+                  class="issue-item-content">
+                  <span class="head text-secondary">{{selectedIssue['issueType']}}</span>
+                  <span class="date text-muted">
+                    <span class="fa fa-thumbtack fa-xs me-1"></span>
+                    <span *ngIf="selectedIssue['dateReported'] != selectedIssue['dateUpdated']">updated: {{selectedIssue['dateUpdated'] | date}}</span>
+                    <span *ngIf="selectedIssue['dateReported'] == selectedIssue['dateUpdated']">created: {{selectedIssue['dateReported'] | date}}</span>
+                    <span class="fa fa-times ms-2 text-danger" role="button" (click)="clearSelected()"></span>
+                  </span><br>
+                  <span *ngIf="selectedIssue['district']">{{selectedIssue['district']}}<br></span>
+                  <span *ngIf="selectedIssue['locationDescription']">{{selectedIssue['locationDescription']}}<br></span>
+                  <span *ngIf="selectedIssue['description']">{{selectedIssue['description'] | truncate:[80]}}<br></span>
+                  <div class="py-1 px-0 col-9 d-flex align-items-center">
+                    <ng-container *ngIf="selectedIssue['previousStatus']">
+                      <div
+                        class="desaturate text-white rounded-pill pill-body me-2"
+                        statusColor="{{selectedIssue['previousStatus']}}">
+                        <span class="d-lg-none">{{selectedIssue['previousStatus'] | truncate:[14]}}</span>
+                        <span class="d-none d-lg-block">{{selectedIssue['previousStatus']}}</span>
+                      </div>
+                      <span class="fa fa-arrow-right text-muted me-2"></span>
+                    </ng-container>
+                    <div class="text-white rounded-pill pill-body" statusColor="{{selectedIssue['status']}}">
+                      <span class="d-lg-none">{{selectedIssue['status'] | truncate:[14]}}</span>
+                      <span class="d-none d-lg-block">{{selectedIssue['status']}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="!selectedIssue">
+                <span class="ms-1 text-danger" style="font-size: 0.8rem">
+                  Please select an issue.
+                </span>
+              </div>
+
+              <div *ngIf="selectedIssue && selectedIssue['statusUpdateCount'] == 0">
+                <span class="ms-1 text-danger" style="font-size: 0.8rem">
+                  No status updates for this issue.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="cancelExport()">Cancel</button>
+    <button type="button" class="btn btn-success" [disabled]="['statusUpdate'].includes(exportForm?.controls['exportType']?.value) && !selectedIssue" (click)="exportSheet()">Export</button>
+    <!-- <button type="button" class="btn btn-success" [disabled]="['statusUpdate'].includes(exportForm?.controls['exportType']?.value) && (!selectedIssue || selectedIssue['statusUpdateCount'] == 0)" (click)="exportSheet()">Update</button> -->
+  </div>
+
+</ng-template>

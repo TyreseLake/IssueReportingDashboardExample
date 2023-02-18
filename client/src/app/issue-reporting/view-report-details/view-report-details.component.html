@@ -1,0 +1,959 @@
+<div class="container-fluid pb-3 ps-3">
+  <h4 class="mt-2 mb-2">
+    <span class="text-primary-gradient">
+      Details:
+    </span>
+  </h4>
+  <h6><a routerLink="/reporting/issue-view" class="text-decoration-none text-secondary"><i class="fa fa-caret-left mt-2"></i> Back</a></h6>
+  <div>
+    <table class="table details-table">
+      <tbody>
+        <tr>
+          <td class="minimized-text text-muted" colspan="2"><span class="me-2" style="float: right;"><span class="me-2">Issue ID:</span> {{issueReportDetails["id"]}}</span></td>
+        </tr>
+
+        <tr>
+          <td>Issue Type</td>
+          <td class="w-100">
+            <span *ngIf="issueReportDetails['issueType']">{{issueReportDetails["issueType"]}}</span>
+            <span *ngIf="!issueReportDetails['issueType']" class="text-muted">Not Specified</span>
+          </td>
+        </tr>
+
+        <!-- Issue Managers Only -->
+        <ng-container *appIssueManagementPrivileges>
+          <tr>
+            <td>Description</td>
+            <td>
+              <div class="row">
+                <div class="col col-md-10 col-lg-9 col-xl-8">
+                  <a
+                      (click)="openDescriptionModal()"
+                      class="text-decoration-none"
+                      style="cursor: pointer;">
+                    <span *ngIf='issueReportDetails["description"]'>{{issueReportDetails["description"]}}</span>
+                    <span *ngIf='!issueReportDetails["description"]' class="text-muted">No description</span>
+                    <i class="ps-2 fa fa-edit"></i>
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>District</td>
+            <td>
+              <a
+                (click)="openUpdateLocationModal(issueReportDetails['district'], issueReportDetails['issueLocation'])"
+                class="text-decoration-none"
+                style="cursor: pointer;">
+                <span *ngIf='issueReportDetails["district"]'>{{issueReportDetails["district"]}}</span>
+                <span *ngIf='!issueReportDetails["district"]' class="text-muted">District not specified</span>
+                <i class="ps-2 fa fa-edit"></i>
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="d-lg-none">Location Desc.</span>
+              <span class="d-none d-lg-block">Location Description</span>
+            </td>
+            <td>
+              <div class="row">
+                <div class="col col-md-10 col-lg-9 col-xl-8">
+                  <a
+                      (click)="openUpdateLocationModal(issueReportDetails['district'], issueReportDetails['issueLocation'])"
+                      class="text-decoration-none"
+                      style="cursor: pointer;">
+                    <span *ngIf='issueReportDetails["issueLocation"]'>{{issueReportDetails["issueLocation"]}}</span>
+                    <span *ngIf='!issueReportDetails["issueLocation"]' class="text-muted">Location not specified</span>
+                    <i class="ps-2 fa fa-edit"></i>
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- <tr>
+            <td>Date Reported</td>
+            <td>
+              <span *ngIf='issueReportDetails["dateReported"]'>{{issueReportDetails["dateReported"] | date}}</span>
+              <span *ngIf='!issueReportDetails["dateReported"]' class="text-muted">Not Specified</span>
+            </td>
+          </tr> -->
+        </ng-container>
+
+        <ng-container *appNoIssueManagementPrivileges>
+          <tr>
+            <td>Description</td>
+            <td>
+              <div class="row">
+                <div class="col col-md-10 col-lg-9 col-xl-8">
+                  <span *ngIf='issueReportDetails["description"]'>{{issueReportDetails["description"]}}</span>
+                  <span *ngIf='!issueReportDetails["description"]' class="text-muted">No description</span>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>District</td>
+            <td>
+              <span *ngIf='issueReportDetails["district"]'>{{issueReportDetails["district"]}}</span>
+              <span *ngIf='!issueReportDetails["district"]' class="text-muted">District not specified</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="d-lg-none">Location Desc.</span>
+              <span class="d-none d-lg-block">Location Description</span>
+            </td>
+            <td>
+              <div class="row">
+                <div class="col col-md-10 col-lg-9 col-xl-8">
+                  <span *ngIf='issueReportDetails["issueLocation"]'>{{issueReportDetails["issueLocation"]}}</span>
+                  <span *ngIf='!issueReportDetails["issueLocation"]' class="text-muted">Location not specified</span>
+                </div>
+              </div>
+            </td>
+
+          </tr>
+
+          <!-- <tr>
+            <td>Date Reported</td>
+            <td>{{issueReportDetails["dateReported"] | date}}</td>
+          </tr> -->
+        </ng-container>
+
+        <tr>
+          <td>Date Reported</td>
+          <td>
+            <span *ngIf='issueReportDetails["dateReported"]'>{{issueReportDetails["dateReported"] | date:'MMM d, y, h:mm a'}}</span>
+            <span *ngIf='!issueReportDetails["dateReported"]' class="text-muted">Not Specified</span>
+          </td>
+        </tr>
+
+        <ng-container *appIssueManagementPrivileges>
+          <tr>
+            <td>Status</td>
+            <td>
+              <div class="d-md-flex">
+                <div class="px-2 text-white rounded-pill pill-body my-1" statusColor="{{issueReportDetails['currentStatus']}}">
+                  <span>{{issueReportDetails["currentStatus"]}}</span>
+                </div>
+                <div class="d-flex align-items-center">
+                  <a (click)="openStatusModal(issueReportDetails['currentStatus'])"
+                     class="ms-1 text-decoration-none"
+                     role="button">
+                    <span class="ps-md-2 me-1 fa fa-sm fa-plus"></span>Update Status
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- <tr>
+            <td>Issue Review Type</td>
+            <td>
+              <a (click)="openStatusModal(issueReportDetails['issueStatus'], issueReportDetails['reviewType'])"
+                class="text-decoration-none"
+                style="cursor: pointer;">
+                <span *ngIf='issueReportDetails["issueStatus"] != "Pending"'>
+                  {{issueReportDetails["reviewType"]}}
+                </span>
+                <span *ngIf='issueReportDetails["issueStatus"] == "Pending"' class="text-muted">
+                  N/A
+                </span>
+                <i class="ps-2 fa fa-edit fa-lg align-middle"></i>
+              </a>
+            </td>
+          </tr> -->
+        </ng-container>
+
+        <ng-container *appNoIssueManagementPrivileges>
+          <tr>
+            <td>Status</td>
+            <td>
+              <div class="d-md-flex">
+                <div class="px-2 text-white rounded-pill pill-body d-flex my-1" statusColor="{{issueReportDetails['currentStatus']}}">
+                  <span>{{issueReportDetails["currentStatus"]}}</span>
+                </div>
+                <ng-container *appStatusUpdatePrivileges>
+                  <div class="d-flex align-items-center">
+                    <a (click)="openStatusModal(issueReportDetails['currentStatus'])"
+                       class="ms-1 text-decoration-none"
+                       role="button">
+                      <span class="ps-md-2 me-1 fa fa-sm fa-plus"></span>Update Status
+                    </a>
+                  </div>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+
+        <tr>
+          <td>Images</td>
+          <td class="text-muted" *ngIf="issueReportDetails['images']?.length == 0">None</td>
+          <td class="text-muted pe-0" *ngIf="issueReportDetails['images'].length > 0">
+            <app-image-viewer
+              [imageUrls]="issueReportDetails['images']"
+            ></app-image-viewer>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Map Location</td>
+          <!-- <td *ngIf='issueReportDetails["locationLatitude"] > 0.0 || issueReportDetails["locationLongitude"] > 0.0'><span style="font-style: italic;">({{issueReportDetails["locationLatitude"]}}, {{issueReportDetails["locationLongitude"]}})</span></td> -->
+          <td *ngIf='issueReportDetails["locationLatitude"] > 0.0 || issueReportDetails["locationLongitude"] > 0.0'>
+            <!-- <button
+              class="btn btn-sm text-primary px-3 py-1 border border-1 rounded-pill"
+              style="font-weight: bold;"
+              [ngClass]="{'text-white btn-primary' : showMap}"
+              (click)="toggleMap()">
+              View Coordinates <i class="fa fa-map"></i>
+            </button> -->
+            <a class="text-decoration-none d-flex align-items-center"
+              role="button"
+              style="font-weight: normal;"
+              (click)="toggleMap()">
+              <span *ngIf="!showMap" class="d-flex align-items-center"><span class="fa fa-plus me-1 fa-sm"></span>Show Issue Location</span>
+              <span *ngIf="showMap" class="d-flex align-items-center text-muted"><span class="fa fa-times me-1 fa-sm"></span>Hide Issue Location</span>
+            </a>
+            <ng-container *ngIf="showMap">
+              <div @fadeInOutGrow *ngIf="apiLoaded | async" class="mt-2">
+                <google-map
+                  [height]="mapHeight"
+                  [center]='{lat: issueReportDetails["locationLatitude"], lng: issueReportDetails["locationLongitude"]}'
+                  [options]="options">
+                  <map-marker [position]='{lat: issueReportDetails["locationLatitude"], lng: issueReportDetails["locationLongitude"]}'></map-marker>
+                </google-map>
+                <p class="text-muted m-0 text-center map-coordinates">
+                  ({{issueReportDetails["locationLatitude"] | number:'1.1-6'}}, {{issueReportDetails["locationLongitude"] | number:'1.1-6'}})
+                </p>
+              </div>
+            </ng-container>
+          </td>
+
+          <td *ngIf='!(issueReportDetails["locationLatitude"] > 0.0 || issueReportDetails["locationLongitude"] > 0.0)' class="text-muted">Location coordinates not specified</td>
+        </tr>
+        <!-- <tr
+          *ngIf='issueReportDetails["locationLatitude"] > 0.0 || issueReportDetails["locationLongitude"] > 0.0'
+          style="border-top:hidden;">
+          <td></td>
+          <td>
+            <button
+              class="btn btn-sm text-primary px-3 py-1 border border-1 rounded-pill"
+              style="font-weight: bold;"
+              [ngClass]="{'text-white btn-primary' : showMap}"
+              (click)="toggleMap()">
+              View Coordinates <i class="fa fa-map"></i>
+            </button>
+            <ng-container *ngIf="showMap">
+              <div *ngIf="apiLoaded | async" class="mt-2">
+                <google-map [height]="mapHeight" [width]="mapWidth" [center]='{lat: issueReportDetails["locationLatitude"], lng: issueReportDetails["locationLongitude"]}' [options]="options">
+                  <map-marker [position]='{lat: issueReportDetails["locationLatitude"], lng: issueReportDetails["locationLongitude"]}'></map-marker>
+                </google-map>
+              </div>
+            </ng-container>
+          </td>
+        </tr> -->
+        <!-- <tr *ngIf="showMap" style="border-top: hidden;">
+          <td colspan="2">
+            <div *ngIf="apiLoaded | async" id="meow">
+              <google-map [center]='{lat: issueReportDetails["locationLatitude"], lng: issueReportDetails["locationLongitude"]}' [options]="options">
+                <map-marker [position]='{lat: issueReportDetails["locationLatitude"], lng: issueReportDetails["locationLongitude"]}'></map-marker>
+              </google-map>
+            </div>
+          </td>
+        </tr> -->
+        <!-- <tr>
+          <td>No. of Reports</td>
+          <td><span class="rounded bg-primary p-0 px-2 text-white">{{issueReportDetails["reportCount"]}}</span></td>
+        </tr> -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row pe-0" style="min-height: 220px;">
+    <div class="col ">
+      <tabset class="member-tabset" #memberTabs>
+        <tab heading='Status Updates' (selectTab)="onTabActivated($event)">
+          <div *ngIf="!(statuses?.length > 0)" class="my-2">
+            <span class="text-muted">No Status Updates made.</span>
+          </div>
+          <div *ngIf="statuses?.length > 0" class="my-2">
+            <ng-container *ngFor="let status of statuses; let i = index">
+              <app-status-update-card
+                [statusUpdate]="status"
+                [index]="i + 1"
+                [allowEditing]="userCanEditAll || status['userName'] == userName"
+                [allowEditingStatus]="status['isCurrentStatus']">
+              </app-status-update-card>
+            </ng-container>
+          </div>
+
+
+          <div class="d-flex justify-content-center" *ngIf="issueReportDetails['reportCount'] > pageSize">
+            <pagination
+              [boundaryLinks]="true"
+              [totalItems]= "statusPagination.TotalItems"
+              [itemsPerPage]= "statusPagination.ItemsPerPage"
+              [maxSize]="7"
+              [(ngModel)]="statusPagination.CurrentPage"
+              (pageChanged)="statusPageChanged($event)"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+          </div>
+        </tab>
+
+        <tab heading='Reports' (selectTab)="onTabActivated($event)">
+          <div *ngIf="!(issueReports?.length > 0)" class="my-2">
+            <span class="text-muted">No Issue Reports made.</span>
+          </div>
+          <div *ngIf="issueReports?.length > 0" class="mt-2">
+            <div class="d-flex justify-content-center"  *ngIf="issueReportDetails['reportCount'] > pageSize">
+              <pagination
+                [boundaryLinks]="true"
+                [totalItems]= "pagination.TotalItems"
+                [itemsPerPage]= "pagination.ItemsPerPage"
+                [(ngModel)]="pagination.CurrentPage"
+                [maxSize]="7"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;"
+                nextText="&rsaquo;"
+                firstText="&laquo;"
+                lastText="&raquo;"
+              >
+              </pagination>
+            </div>
+
+            <ng-container *appIssueManagementPrivileges>
+              <div class="mb-2 text-end">
+                <button class="btn btn-sm btn-light text-primary px-3 border border-1 rounded-pill"
+                        [disabled]="this.selectedReports.length == 0"
+                        (click)="openSelectIssueStatusModal()">
+                    <span style="font-weight: bold;">Move Selected <i class="fa fa-caret-right"></i></span>
+                </button>
+              </div>
+            </ng-container>
+
+            <div *ngFor="let issueReport of issueReports; let i = index" [attr.data-index]="i" [hidden]="loading">
+              <!-- Non Edit Area -->
+              <div
+                  *ngIf="!editing || editing != issueReport['id']"
+                  class="card mb-3"
+                  [class.border-primary]="issueReport['isChecked']"
+                  >
+
+                <div class="card-header text-center py-1">
+                  <ng-container *appIssueManagementPrivileges>
+                    <div class="select-box">
+                      <div class="form-check">
+                        <input class="form-check-input"
+                          type="checkbox"
+                          value=""
+                          [(ngModel)]="issueReport['isChecked']"
+                          (change)="selectIssue(issueReport['id'], $event.target['checked'])">
+                      </div>
+                    </div>
+                  </ng-container>
+
+                  {{((pageNumber - 1) * pageSize) + i+1}}
+                </div>
+
+                <div class="card-body py-1">
+
+                  <div *ngIf="userCanEditAll || issueReport['userName'] == userName" class="text-center" style="text-align: right;">
+                    <a
+                        (click)="editReport(issueReport)"
+                        class="text-decoration-none"
+                        style="cursor: pointer;"
+                        title="Edit issue report">
+                      <span class="d-none d-md-inline">Edit</span>
+                      <i class="ps-2 fa fa-edit"></i>
+                    </a>
+                  </div>
+
+                  <table class="table details-table table-sm table-borderless">
+                    <tbody>
+                      <tr>
+                        <td class="text-muted">ID</td>
+                        <td class="text-muted w-100">
+                          <div class="row">
+                            <div class="col-4">{{issueReport["id"]}}</div>
+                            <div  class="col-8 pe-0" style="text-align: right;">
+                              <span *ngIf="issueReport['moved']" class="text-muted">
+                                Moved on {{issueReport['dateMoved'] | date:'shortDate'}}
+                                <ng-container *ngIf="!issueReport['orignalIssueSourceId']">
+                                  <i class="fa fa-angle-double-right"></i>
+                                </ng-container>
+                                <ng-container *ngIf="issueReport['orignalIssueSourceId']">
+                                  <a  title="Go to original issue report source" role="button" (click)="openLink(issueReport['orignalIssueSourceId'])"><span class="fa fa-angle-double-right"></span></a>
+                                </ng-container>
+                              </span>
+                            </div>
+                            <!-- <div *ngIf="issueReport['userName'] && issueReport['platform'] == 'Mobile Application'" class="col-3" style="text-align: right;">
+                              <div class="dropdown me-2" dropdown>
+                                <a
+                                  (click)="null"
+                                  class="text-decoration-none"
+                                  style="cursor: pointer;"
+                                  title="edit"
+                                  dropdownToggle>
+                                <span class="d-none d-sm-inline">Edit</span>
+                                <i class="ps-2 fa fa-edit fa-lg align-middle"></i>
+                                </a>
+
+                                <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+                                  <form class="px-3 py-1">
+
+                                    <div class="mt-1 text-center">
+                                      <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                                              (click)="null">
+                                        Clear
+                                      </button>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div> -->
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Subject</td>
+                        <td class="w-100" *ngIf="issueReport['subject']">{{issueReport["subject"]}}</td>
+                        <td class="w-100 text-muted" *ngIf="!issueReport['subject']">No subject specified</td>
+                      </tr>
+                      <tr>
+                        <td>Platform</td>
+                        <td *ngIf="issueReport['platform']">
+                          {{issueReport["platform"]}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Uploader</td>
+                        <td *ngIf="issueReport['userName']">
+                          <span [title]="'User Name: ' + issueReport['userName']">{{issueReport["uploader"]}}</span>
+                        </td>
+                        <td *ngIf="!issueReport['userName']">
+                          <span class="text-muted">Unknown</span>
+                        </td>
+                      </tr>
+                      <ng-container *ngIf="issueReport['phoneNumber'] || issueReport['address'] || issueReport['email']">
+                        <tr>
+                          <td colspan="2">
+                            <a class="text-decoration-none d-flex align-items-center"
+                              role="button"
+                              style="font-weight: normal;"
+                              (click)="!issueReport['showDetails'] || issueReport['showDetails'] == false ? issueReport['showDetails'] = true : issueReport['showDetails'] = false">
+                              <span *ngIf="!issueReport['showDetails'] || issueReport['showDetails'] == false" class="d-flex align-items-center"><span class="fa fa-plus fa-sm me-1"></span>Additional Reporter Details</span>
+                              <span *ngIf="issueReport['showDetails'] == true" class="text-muted d-flex align-items-center"><span class="fa fa-times fa-sm me-1"></span>Hide Details</span>
+                            </a>
+                          </td>
+                        </tr>
+                      </ng-container>
+                      <ng-container *ngIf="issueReport['showDetails']">
+                        <tr @fadeInOutGrow *ngIf="issueReport['phoneNumber']">
+                          <td class="ps-1 text-secondary">Phone No.</td>
+                          <td class="text-secondary">{{issueReport['phoneNumber']}}</td>
+                        </tr>
+                        <tr @fadeInOutGrow *ngIf="issueReport['email']">
+                          <td class="ps-1 text-secondary">Email</td>
+                          <td class="text-secondary">{{issueReport['email']}}</td>
+                        </tr>
+                        <tr @fadeInOutGrow *ngIf="issueReport['address']">
+                          <td class="ps-1 text-secondary">Address</td>
+                          <td class="text-secondary">{{issueReport['address']}}</td>
+                        </tr>
+                      </ng-container>
+                      <tr>
+                        <td>Date Reported</td>
+                        <td>{{issueReport["dateReported"] | date:'MMM d, y, h:mm a'}}</td>
+                      </tr>
+                      <tr>
+                        <td>Issue Type</td>
+                        <td>{{issueReport["issueType"]}}</td>
+                      </tr>
+                      <tr>
+                        <td>Description</td>
+                        <td *ngIf="issueReport['description']">{{issueReport["description"]}}</td>
+                        <td class="text-muted" *ngIf="!issueReport['description']">No description</td>
+                      </tr>
+                      <tr>
+                        <td>District</td>
+                        <td *ngIf="issueReport['district']">{{issueReport["district"]}}</td>
+                        <td class="text-muted" *ngIf="!issueReport['district']">No district specified</td>
+                      </tr>
+                      <tr>
+                        <td>Location</td>
+                        <td *ngIf="issueReport['locationDescription']">{{issueReport["locationDescription"]}}</td>
+                        <td class="text-muted" *ngIf="!issueReport['locationDescription']">No description of location</td>
+                      </tr>
+
+                      <!-- <tr *ngIf='issueReport["locationLatitude"] > 0.0 || issueReport["locationLongitude"] > 0.0'>
+                        <td></td>
+                        <td>
+                          <button
+                            class="btn btn-sm text-primary px-2 py-0 border border-1 rounded-pill"
+                            style="font-weight: bold;"
+                            [ngClass]="{'text-white btn-primary' : showReportMap[i]}"
+                            (click)="toggleReportMap(i)">
+                            View Coordinates <i class="fa fa-map"></i>
+                          </button>
+                          <ng-container *ngIf="showReportMap[i]">
+                            <div @fadeInOutGrow *ngIf="apiLoaded | async" class="mt-2">
+                              <google-map [height]="mapHeight"
+                                          [width]="mapWidth"
+                                          [center]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'
+                                          [options]="options">
+                                <map-marker [position]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'></map-marker>
+                              </google-map>
+                              <p class="text-muted m-0 text-center" style="font-style: italic; width:270px;">({{issueReport["locationLatitude"] | number:'1.1-6'}}, {{issueReport["locationLongitude"] | number:'1.1-6'}})</p>
+                            </div>
+                          </ng-container>
+                        </td>
+                      </tr> -->
+
+                      <ng-container *ngIf='issueReport["locationLatitude"] > 0.0 || issueReport["locationLongitude"] > 0.0'>
+                        <tr>
+                          <td colspan="2">
+                            <a class="text-decoration-none d-flex align-items-center"
+                              role="button"
+                              style="font-weight: normal;"
+                              (click)="!showReportMap[i] || showReportMap[i] == false ? showReportMap[i] = true : showReportMap[i] = false">
+                              <span *ngIf="!showReportMap[i] || showReportMap[i] == false" class="d-flex align-items-center"><span class="fa fa-plus me-1 fa-sm"></span>Show Issue Location</span>
+                              <span *ngIf="showReportMap[i] == true" class="text-muted d-flex align-items-center"><span class="fa fa-times me-1 fa-sm"></span>Hide Issue Location</span>
+                            </a>
+                          </td>
+                        </tr>
+
+                        <ng-container *ngIf="showReportMap[i]">
+                          <tr @fadeInOutGrow>
+                            <td colspan="2">
+                              <div *ngIf="apiLoaded | async">
+                                <google-map [height]="mapHeight"
+                                            [center]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'
+                                            [options]="options">
+                                  <map-marker [position]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'></map-marker>
+                                </google-map>
+                                <p class="text-muted m-0 text-center map-coordinates">({{issueReport["locationLatitude"] | number:'1.1-6'}}, {{issueReport["locationLongitude"] | number:'1.1-6'}})</p>
+                              </div>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+
+                      <ng-container *ngIf="issueReport['images']?.length > 0">
+                        <tr>
+                          <td colspan="2">
+                            <a class="text-decoration-none d-flex align-items-center"
+                              role="button"
+                              style="font-weight: normal;"
+                              (click)="!showReportImages[i] || showReportImages[i] == false ? showReportImages[i] = true : showReportImages[i] = false">
+                              <span *ngIf="!(showReportImages[i] == true)" class="d-flex align-items-center"><span class="fa fa-plus me-1 fa-sm"></span>Show Images</span>
+                              <span *ngIf="showReportImages[i] == true" class="text-muted d-flex align-items-center"><span class="fa fa-times me-1 fa-sm"></span>Hide Images</span>
+                            </a>
+                          </td>
+                        </tr>
+
+                        <ng-container *ngIf="showReportImages[i]">
+                          <tr>
+                            <td colspan="2">
+                              <div>
+                                <app-image-viewer
+                                  [imageUrls]="issueReport['images']"
+                                ></app-image-viewer>
+                              </div>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="card-footer text-center py-1">
+                  <ng-container *ngIf="issueReport['dateReported']">
+                    {{issueReport["dateReported"] | timeago}}
+                  </ng-container>
+                </div>
+              </div>
+
+              <!-- Edit Area -->
+              <div
+                *ngIf="editing == issueReport['id']"
+                class="card mb-3 border-info"
+                >
+
+                  <div class="card-header text-center py-1 bg-editing">
+                    {{((pageNumber - 1) * pageSize) + i+1}}
+                  </div>
+
+                  <div class="card-body py-1">
+                    <div *ngIf="userCanEditAll || issueReport['userName'] == userName" class="text-center" style="text-align: right;">
+                      <a
+                          (click)="editing = null"
+                          class="text-decoration-none text-muted"
+                          style="cursor: pointer;"
+                          title="Edit issue report">
+                        <span class="d-none d-md-inline">Hide</span>
+                        <i class="ps-1 pb-1 fa fa-eye-slash align-middle"></i>
+                      </a>
+                    </div>
+                    <form
+                      [formGroup]="editForm"
+                      (ngSubmit)="submitReportEdit()">
+                      <table class="table details-table table-sm table-borderless">
+                        <tbody>
+                          <tr>
+                            <td class="text-muted">ID</td>
+                            <td class="text-muted w-100">
+                              <div class="row">
+                                <div class="col-4">{{issueReport["id"]}}</div>
+                                <div  class="col-8 pe-0" style="text-align: right;">
+                                  <span *ngIf="issueReport['moved']" class="text-muted">
+                                    Moved on {{issueReport['dateMoved'] | date:'shortDate'}}
+                                    <ng-container *ngIf="!issueReport['orignalIssueSourceId']">
+                                      <i class="fa fa-angle-double-right"></i>
+                                    </ng-container>
+                                    <ng-container *ngIf="issueReport['orignalIssueSourceId']">
+                                      <a  title="Go to original issue report source" role="button" (click)="openLink(issueReport['orignalIssueSourceId'])"><span class="fa fa-angle-double-right"></span></a>
+                                    </ng-container>
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <!-- Edit Subject -->
+                          <tr>
+                            <td class="pt-2">Subject</td>
+                            <td class="w-100 py-0 pe-1 pt-1">
+                              <div class="form-group has-feedback">
+                                <input class="form-control"
+                                    type="text"
+                                    formControlName="newSubject"
+                                    placeholder="Enter a new subject">
+                              </div>
+                            </td>
+                          </tr>
+                          <tr *ngIf="issueReport['platform'] != 'Mobile Application'">
+                            <td class="pt-2">Platform</td>
+                            <!-- <td *ngIf="issueReport['platform']">
+                              {{issueReport["platform"]}}
+                            </td> -->
+                            <td *ngIf="platformList?.length > 0" class='pt-1'>
+                              <!-- {{issueReport["platform"]}} -->
+                              <div class="form-group">
+                                <select class="form-select" role="button" formControlName="newPlatform">
+                                  <option class="text-muted" (value)="''" selected hidden>--Select Platform--</option>
+                                  <option *ngFor="let item of platformList" [selected]='issueReport["platform"] == item'>{{item}}</option>
+                                </select>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr *ngIf="issueReport['platform'] == 'Mobile Application'" class="mt-2">
+                            <td>Platform</td>
+                            <td *ngIf="issueReport['platform']">
+                              {{issueReport["platform"]}}
+                            </td>
+                          </tr>
+                          <tr *ngIf="issueReport['platform'] == 'Mobile Application'">
+                            <td class="text-muted">Uploader</td>
+                            <td *ngIf="issueReport['userName']">
+                              <span class="text-muted">user: </span>{{issueReport["userName"]}}
+                            </td>
+                            <td *ngIf="!issueReport['userName']">
+                              <span class="text-muted">Unknown</span>
+                            </td>
+                          </tr>
+                          <tr *ngIf="issueReport['platform'] != 'Mobile Application'">
+                            <td class="text-muted">Reporter</td>
+                            <td *ngIf="issueReport['userName']">
+                              <span class="text-muted">user: </span>{{issueReport["userName"]}}
+                            </td>
+                            <td *ngIf="!issueReport['userName']">
+                              <span class="text-muted">Unknown</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2">
+                              <a class="text-decoration-none d-flex align-items-center"
+                                role="button"
+                                style="font-weight: normal;"
+                                (click)="!issueReport['showDetails'] || issueReport['showDetails'] == false ? issueReport['showDetails'] = true : issueReport['showDetails'] = false">
+                                <span *ngIf="!issueReport['showDetails'] || issueReport['showDetails'] == false" class="d-flex align-items-center"><span class="fa fa-plus me-1 fa-sm"></span>Additional Reporter Details</span>
+                                <span *ngIf="issueReport['showDetails'] == true" class="text-muted d-flex align-items-center"><span class="fa fa-times me-1 fa-sm"></span>Hide Details</span>
+                              </a>
+                            </td>
+                          </tr>
+                          <ng-container *ngIf="issueReport['showDetails']">
+                            <!-- Edit phone number -->
+                            <tr @fadeInOutGrow>
+                              <td class="ps-1 pt-2">Phone No.</td>
+                              <td class="w-100 py-0 pe-1 pt-1">
+                                <div class="form-group has-feedback d-flex">
+                                  <input class="form-control"
+                                      type="text"
+                                      formControlName="newPhoneNumber"
+                                      placeholder="Enter a new phone number">
+                                </div>
+                              </td>
+                            </tr>
+                            <!-- Edit email -->
+                            <tr @fadeInOutGrow>
+                              <td class="ps-1 pt-2">Email</td>
+                              <td class="w-100 py-0 pe-1 pt-1">
+                                <input class="form-control"
+                                      type="text"
+                                      formControlName="newEmail"
+                                      placeholder="Enter a new email"
+                                      [ngClass]="{ 'is-invalid border-danger' : editForm.controls['newEmail']?.touched && editForm.controls['newEmail']?.invalid }">
+                              </td>
+                            </tr>
+                            <!-- Edit address -->
+                            <tr @fadeInOutGrow>
+                              <td class="ps-1 pt-2">Address</td>
+                              <td class="w-100 py-0 pe-1 pt-1">
+                                <div class="form-group has-feedback d-flex">
+                                  <input class="form-control"
+                                      type="text"
+                                      formControlName="newAddress"
+                                      placeholder="Enter a new phoneNumber">
+                                </div>
+                              </td>
+                            </tr>
+                          </ng-container>
+                          <tr>
+                            <td class="text-muted">Date Reported</td>
+                            <td>{{issueReport["dateReported"] | date:'MMM d, y, h:mm a'}}</td>
+                          </tr>
+                          <tr>
+                            <td class="pt-2">Issue Type</td>
+                            <td *ngIf="issueTypeList?.length > 0" class="pt-1 pb-0">
+                              <div class="form-group">
+                                <select class="form-select" role="button" formControlName="newIssueType">
+                                  <option class="text-muted" (value)="''" selected hidden>--Select Issue Type--</option>
+                                  <option *ngFor="let item of issueTypeList" [selected]='issueReport["issueType"] == item'>{{item}}</option>
+                                </select>
+                              </div>
+                            </td>
+                          </tr>
+                          <!-- Edit description -->
+                          <tr>
+                            <td class="pt-2">Description</td>
+                            <td class="w-100 py-0 pe-1 pt-1">
+                              <div class="form-group has-feedback d-flex">
+                                <input class="form-control"
+                                    type="text"
+                                    formControlName="newDescription"
+                                    placeholder="Enter a new description">
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="pt-2">District</td>
+                            <!-- <td *ngIf="issueReport['district']">{{issueReport["district"]}}</td>
+                            <td class="text-muted" *ngIf="!issueReport['district']">No district specified</td> -->
+                            <td *ngIf="districtList?.length > 0" class='pt-1 pb-0'>
+                              <div class="form-group">
+                                <select class="form-select" role="button" formControlName="newDistrict">
+                                  <option class="text-muted" (value)="''" selected hidden>--Select District--</option>
+                                  <option *ngFor="let item of districtList" [selected]='issueReport["district"] == item'>{{item}}</option>
+                                  <!-- <option (value)="null" [selected]="!issueReport['district'] || issueReport['district']=='' ">None</option> -->
+                                </select>
+                              </div>
+                            </td>
+                          </tr>
+                          <!-- Edit description -->
+                          <tr>
+                            <td class="pt-2">Location</td>
+                            <td class="w-100 py-0 pe-1 pt-1">
+                              <div class="form-group has-feedback d-flex">
+                                <input class="form-control"
+                                    type="text"
+                                    formControlName="newLocationDescription"
+                                    placeholder="Enter a new location description">
+                              </div>
+                            </td>
+                          </tr>
+                          <!-- <tr *ngIf='issueReport["locationLatitude"] > 0.0 || issueReport["locationLongitude"] > 0.0'>
+                            <td></td>
+                            <td>
+                              <button
+                                class="btn btn-sm text-primary px-2 py-0 border border-1 rounded-pill"
+                                style="font-weight: bold;"
+                                [ngClass]="{'text-white btn-primary' : showReportMap[i]}"
+                                (click)="toggleReportMap(i)">
+                                View Coordinates <i class="fa fa-map"></i>
+                              </button>
+                              <ng-container *ngIf="showReportMap[i]">
+                                <div @fadeInOutGrow *ngIf="apiLoaded | async" class="mt-2">
+                                  <google-map [height]="mapHeight"
+                                              [width]="mapWidth"
+                                              [center]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'
+                                              [options]="options">
+                                    <map-marker [position]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'></map-marker>
+                                  </google-map>
+                                  <p class="text-muted m-0 text-center" style="font-style: italic; width:270px;">({{issueReport["locationLatitude"] | number:'1.1-6'}}, {{issueReport["locationLongitude"] | number:'1.1-6'}})</p>
+                                </div>
+                              </ng-container>
+                            </td>
+                          </tr> -->
+
+                          <ng-container *ngIf='issueReport["locationLatitude"] > 0.0 || issueReport["locationLongitude"] > 0.0'>
+                            <tr>
+                              <td colspan="2">
+                                <a class="text-decoration-none d-flex align-items-center"
+                                  role="button"
+                                  style="font-weight: normal;"
+                                  (click)="!showReportMap[i] || showReportMap[i] == false ? showReportMap[i] = true : showReportMap[i] = false">
+                                  <span *ngIf="!showReportMap[i] || showReportMap[i] == false" class="d-flex align-items-center"><span class="fa fa-plus me-1 fa-sm"></span>Show Issue Location</span>
+                                  <span *ngIf="showReportMap[i] == true" class="text-muted d-flex align-items-center"><span class="fa fa-times me-1 fa-sm"></span>Hide Issue Location</span>
+                                </a>
+                              </td>
+                            </tr>
+                          </ng-container>
+
+                          <ng-container *ngIf="showReportMap[i]">
+                            <tr @fadeInOutGrow>
+                              <td colspan="2">
+                                <div *ngIf="apiLoaded | async">
+                                  <google-map [height]="mapHeight"
+                                              [center]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'
+                                              [options]="options">
+                                    <map-marker [position]='{lat: issueReport["locationLatitude"], lng: issueReport["locationLongitude"]}'></map-marker>
+                                  </google-map>
+                                  <p class="text-muted m-0 text-center map-coordinates">({{issueReport["locationLatitude"] | number:'1.1-6'}}, {{issueReport["locationLongitude"] | number:'1.1-6'}})</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </ng-container>
+
+                          <ng-container *ngIf="issueReport['images']?.length > 0">
+                            <tr>
+                              <td colspan="2">
+                                <a class="text-decoration-none d-flex align-items-center"
+                                  role="button"
+                                  style="font-weight: normal;"
+                                  (click)="!showReportImages[i] || showReportImages[i] == false ? showReportImages[i] = true : showReportImages[i] = false">
+                                  <span *ngIf="!(showReportImages[i] == true)" class="d-flex align-items-center"><span class="fa fa-plus me-1 fa-sm"></span>Show Images</span>
+                                  <span *ngIf="showReportImages[i] == true" class="text-muted d-flex align-items-center"><span class="fa fa-times me-1 fa-sm"></span>Hide Images</span>
+                                </a>
+                              </td>
+                            </tr>
+
+                            <ng-container *ngIf="showReportImages[i]">
+                              <tr>
+                                <td colspan="2">
+                                  <div>
+                                    <app-image-viewer
+                                      [imageUrls]="issueReport['images']"
+                                    ></app-image-viewer>
+                                  </div>
+                                </td>
+                              </tr>
+                            </ng-container>
+                          </ng-container>
+
+                          <tr>
+                            <td colspan="2">
+                              <div class="text-center">
+                                <button
+                                  class="btn btn-sm btn-light text-secondary mt-2 px-3 border border-1 rounded-pill"
+                                  style="font-weight: bold; width: 100px;" type="button" (click)="editing=null">
+                                    Cancel
+                                </button>
+                                <button
+                                  type="submit"
+                                  [disabled]="!editForm.touched"
+                                  [class.btn-secondary]="!editForm.touched"
+                                  class="btn btn-sm btn-primary text-white ms-1  mt-2 px-3 border border-1 rounded-pill"
+                                  style="font-weight: bold; width: 100px;" type="submit">
+                                    Save
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </form>
+                  </div>
+
+                  <div class="card-footer text-center py-1 bg-editing">
+                    <ng-container *ngIf="issueReport['dateReported']">
+                      {{issueReport["dateReported"] | timeago}}
+                    </ng-container>
+                  </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-center" *ngIf="issueReportDetails['reportCount'] > pageSize">
+              <pagination
+                [boundaryLinks]="true"
+                [totalItems]= "pagination.TotalItems"
+                [itemsPerPage]= "pagination.ItemsPerPage"
+                [(ngModel)]="pagination.CurrentPage"
+                [maxSize]="7"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;"
+                nextText="&rsaquo;"
+                firstText="&laquo;"
+                lastText="&raquo;"
+              >
+              </pagination>
+            </div>
+          </div>
+        </tab>
+        <!--
+        <tab heading='Remarks' (selectTab)="onTabActivated($event)">
+          <div *ngIf="issueReportDetails['issueRemarks']?.length == 0" class="my-2">
+            <span class="text-muted">No Remarks made.</span>
+          </div>
+          <div *ngIf="issueReportDetails['issueRemarks']?.length > 0" class="my-2">
+            <div *ngFor="let issueRemarks of issueReportDetails['issueRemarks']; let i = index" [attr.data-index]="i"
+                 class="card mb-3">
+              <div class="card-header text-center py-1">
+                {{i+1}}
+              </div>
+              <div class="card-body py-1">
+                <table class="table details-table table-sm table-borderless">
+                  <tbody>
+                    <tr>
+                      <td>User</td>
+                      <td class="w-100">{{issueRemarks['userName']}}</td>
+                    </tr>
+                    <tr>
+                      <td>Category</td>
+                      <td><b>{{issueRemarks["remarkType"]}}</b></td>
+                    </tr>
+                    <tr>
+                      <td>Remark</td>
+                      <td>{{issueRemarks["remark"]}}</td>
+                    </tr>
+                    <tr>
+                      <td>Date</td>
+                      <td>{{issueRemarks["dateRemarked"] | date:'MMM d, y, h:mm a'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer text-center py-1">
+                <ng-container *ngIf="issueRemarks['dateRemarked']">
+                  {{issueRemarks["dateRemarked"] | timeago}}
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </tab> -->
+      </tabset>
+    </div>
+  </div>
+</div>

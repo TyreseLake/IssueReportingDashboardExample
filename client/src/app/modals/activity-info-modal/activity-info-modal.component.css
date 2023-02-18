@@ -1,0 +1,12 @@
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.details-table tr td:first-child{
+  white-space: nowrap !important;
+  font-weight: bold;
+  color: #11998e;
+}

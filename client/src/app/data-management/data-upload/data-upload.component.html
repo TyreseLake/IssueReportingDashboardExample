@@ -1,0 +1,120 @@
+<div class="container-fluid ps-3">
+    <h2 class="mt-2 mb-2">
+      <span class="text-primary-gradient">
+        <i class="fa fa-upload"></i>
+        Upload Issue Reports
+      </span>
+    </h2>
+
+    <p class="text-muted lead">Upload Issues from CMS</p>
+    <span class="text-muted mt-1" style="font-size: 0.85rem;">Upload issues exported from the content management sysytem (webiste or mobile application).</span>
+
+    <div class="row">
+      <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex align-items-center align-sm-items-start flex-column">
+        <app-file-uploader
+        [url]="url"
+        [allowedFileType]="'xls'"
+        [queueLimit]="1"
+        [successMessage]="'Issue reports added successfully.'"
+        [unchangedMessage]="'No new issue reports were added.'"
+        [selectMessage]="'Select a file (.xlsx)'"
+        ></app-file-uploader>
+      </div>
+    </div>
+
+    <!-- <div class="row">
+      <div class="col-12 col-sm-8 col-md-6 col-lg-4 d-flex align-items-center align-sm-items-start flex-column">
+        <div class="upload-area">
+          <div
+            *ngIf="!uploader.queue[0]"
+            ng2FileDrop
+            [ngClass]="{ 'nv-file-over': hasBaseDropzoneOver }"
+            (fileOver)="fileOverBase($event)"
+            [uploader]="uploader"
+            class="card bg-faded p-3 text-center mb-3 my-drop-zone"
+          >
+            <i class="fa fa-arrow-up fa-3x"></i>
+            <span class="pt-2">Drop file here</span>
+          </div>
+          <div
+            *ngIf="uploader.queue[0]"
+            class='card bg-faded p-3 text-center mb-3 nv-file-over'>
+            <i class="fa fa-file fa-3x"></i>
+            <span class="pt-2 text-truncate">{{ uploader.queue[0].file?.name }}</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="d-flex align-sm-items-start flex-column align-items-center">
+            <ng-container *ngIf="!uploader.queue[0]">
+              <input
+                type="file"
+                ng2FileSelect
+                [uploader]="uploader"
+                style="display: none"
+                #fileUploader
+              />
+
+              <button
+                class="btn btn-primary text-white btn-sm border-0 rounded-pill"
+                style="width: 120px"
+                (click)="fileUploader.click()"
+              >
+                Select File
+              </button>
+
+              <div class="mt-1 text-muted">
+                Select a file (.xlsx)
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="uploader.queue[0]">
+              <button
+                class="btn btn-secondary btn-sm border-0 rounded-pill"
+                style="width: 120px"
+                (click)="uploader.clearQueue()"
+                [disabled]="uploader.isUploading"
+              >
+                <i class="fa fa-trash pe-2"></i>Remove
+              </button>
+
+              <div class="mt-1 text-truncate text-center">
+                {{ uploader.queue[0].file?.name }}
+                <p *ngIf="uploader.options.isHTML5" class="text-faded mb-1" nowrap>
+                  Size: {{ uploader.queue[0].file?.size / 1024 / 1024 | number: ".2" }} MB
+                </p>
+              </div>
+
+              <button
+                *ngIf="!uploader.isUploading"
+                class="btn btn-success btn-sm border-0 rounded-pill"
+                style="width: 120px"
+                (click)="uploader.uploadAll()"
+                [disabled]="!uploader.getNotUploadedItems().length"
+              >
+              <i class="fa fa-upload pe-2"></i>Upload
+              </button>
+
+              <button
+                *ngIf="uploader.isUploading"
+                class="btn btn-danger text-white btn-sm border-0 rounded-pill"
+                style="width: 120px"
+                (click)="uploader.cancelAll()"
+                [disabled]="!uploader.isUploading"
+              >
+              <i class="fa fa-ban pe-2"></i>Cancel
+              </button>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="progress w-100 mt-2" *ngIf="uploader.isUploading">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            [ngStyle]="{ width: uploader.progress + '%' }"
+          ></div>
+        </div>
+      </div>
+    </div> -->
+</div>

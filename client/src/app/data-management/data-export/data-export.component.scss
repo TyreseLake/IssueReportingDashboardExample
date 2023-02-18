@@ -1,0 +1,62 @@
+@media (max-width: 768px) {
+  bs-datepicker-container {
+    left: -55px !important;
+  }
+}
+
+
+.issue-item{
+  border-style: solid;
+  border-radius: 2px;
+  border-color: rgba(128, 128, 128, 0.2);
+  border-width: 1px;
+  padding: 2px 1px;
+}
+
+.issue-item .head{
+  font-weight: 500;
+}
+
+.issue-item .date{
+  float: right;
+  font-size: 0.7rem;
+  vertical-align: middle;
+}
+
+.issue-items-container {
+  font-size: 0.9rem;
+  max-height: 400px;
+  overflow-y: auto;
+  line-height: 1.2;
+}
+
+.issue-items-container .issue-item:first-of-type {
+  border-top-style:solid;
+  border-color: rgba(128, 128, 128, 0.2);
+  border-width: 1px;
+}
+
+.issue-item-content {
+  padding: 0 6px;
+  border-left-style:solid;
+  border-color: rgba(17, 153, 142, 0.6);
+  border-width: 3px;
+}
+
+.issue-item-content-error {
+  border-color: rgba(153, 17, 17, 0.6) !important;
+}
+
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 2px;
+  font-size: 0.75rem !important;
+  font-weight: 500;
+}
+
+.desaturate {
+  filter: grayscale(1);
+}

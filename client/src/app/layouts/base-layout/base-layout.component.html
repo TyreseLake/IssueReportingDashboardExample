@@ -1,0 +1,17 @@
+<div>
+  <app-nav></app-nav>
+</div>
+
+<div class="content-container">
+  <app-side-nav></app-side-nav>
+  <div class="top-alert ps-2" *ngIf="showRequireReset" @fadeInOut>
+    <!-- <button type="button" class="btn-close close pull-right me-2" aria-label="Close" (click)="hideReset()">
+      <span aria-hidden="true"></span>
+    </button> --><span class="pull-right me-2 fa fa-times text-muted" role="button" (click)="hideReset()" aria-label="Close"></span>
+    <span class="text-muted">Password required to be reset. </span>
+    <a routerLink="/profile" [queryParams]="{loc:'password'}" (click)="hideReset()">Reset Password</a>
+  </div>
+  <div class="pt-2">
+    <router-outlet></router-outlet>
+  </div>
+</div>

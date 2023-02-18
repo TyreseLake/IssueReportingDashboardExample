@@ -1,0 +1,32 @@
+table {
+  margin: 0px;
+}
+
+td {
+  padding-top: 0px;
+  padding-bottom: 2px;
+}
+
+table tbody tr td:first-child {
+  min-width: 215px;
+}
+
+@media (max-width: 575px) {
+  table tbody tr td:first-child {
+    white-space: unset !important;
+    min-width: 150px;
+  }
+}
+
+.desaturate {
+  filter: grayscale(1);
+}
+
+.bg-editing{
+  background-color: rgb(216, 231, 231);
+}
+
+td {
+  vertical-align: middle;
+}
+

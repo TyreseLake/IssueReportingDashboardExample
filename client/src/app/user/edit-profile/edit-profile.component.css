@@ -1,0 +1,19 @@
+.table tr td:first-child{
+  white-space: nowrap !important;
+  font-weight: bold;
+  color: #11998e;
+}
+
+.table .form-control, .table .form-select, .icon-input{
+  width: 300px;
+}
+
+.input-icon {
+  right: 0;
+}
+
+.minimized-text {
+  font-size: 0.8rem;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}

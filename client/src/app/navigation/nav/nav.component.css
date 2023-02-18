@@ -1,0 +1,19 @@
+.nav-logo{
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+.dropdown-toggle, .dropdown-item {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.home-button{
+  transition-duration: 200ms;
+  opacity: 1;
+}
+
+.hide{
+  opacity: 0;
+}

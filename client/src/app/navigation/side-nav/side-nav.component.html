@@ -1,0 +1,126 @@
+<div class="sidebar-container bg-primary-gradient shadow-sm d-none d-sm-block">
+  <ul class="sidebar-navigation">
+    <!--Issue Reporting-->
+    <div class="header">Issue Reporting</div>
+
+    <ng-container *appIssueManagementPrivileges>
+    <li routerLinkActive="is-active">
+      <a routerLink="/reporting/issue-report">
+        <i class="fa fa-book" aria-hidden="true"></i> Report Issue
+      </a>
+    </li>
+    </ng-container>
+
+    <li routerLinkActive="is-active">
+      <a routerLink="/reporting/issue-view">
+        <i class="fa fa-list" aria-hidden="true"></i> View Reports
+      </a>
+    </li>
+
+    <!--Admin-->
+    <ng-container *appUserManagementPrivileges>
+      <div class="header">User Management</div>
+      <li routerLinkActive="is-active">
+        <a routerLink="/admin/user-create">
+          <i class="fa fa-user-plus" aria-hidden="true"></i> Create User
+        </a>
+      </li>
+      <li routerLinkActive="is-active">
+        <a routerLink="/admin/user-manage">
+          <i class="fa fa-cog" aria-hidden="true"></i> Manage Users
+        </a>
+      </li>
+      <ng-container *appAdminPrivileges>
+        <li routerLinkActive="is-active">
+          <a routerLink="/admin/user-activity">
+            <i class="fa fa-clipboard" aria-hidden="true"></i> User Activity
+          </a>
+        </li>
+      </ng-container>
+    </ng-container>
+
+    <!--Data Management-->
+    <div class="header">Issues Data</div>
+    <li routerLinkActive="is-active">
+      <a routerLink="/data/export">
+        <i class="fa fa-download" aria-hidden="true"></i> Data Export
+      </a>
+    </li>
+    <ng-container *appDataManagementPrivileges>
+      <li routerLinkActive="is-active">
+        <a routerLink="/data/upload">
+          <i class="fa fa-upload" aria-hidden="true"></i> Data Upload
+        </a>
+      </li>
+    </ng-container>
+  </ul>
+</div>
+
+<div class="d-sm-none menu-button">
+  <span class=" fa fa-bars fa-2x" role="button" (click)="Menu.style.width ='100%'"></span>
+</div>
+
+<div id="myNav" class="overlay d-sm-none" #Menu>
+  <!-- Button to close the overlay navigation -->
+  <span class="closebtn" (click)="Menu.style.width ='0%'" role="button">×</span>
+
+  <!-- Overlay content -->
+  <div class="overlay-content">
+    <ul class="sidebar-navigation">
+      <!--Issue Reporting-->
+      <div class="header">Issue Reporting</div>
+
+      <ng-container *appIssueManagementPrivileges>
+        <li routerLinkActive="is-active">
+          <a routerLink="/reporting/issue-report" (click)="Menu.style.width ='0%'">
+            <i class="fa fa-book" aria-hidden="true"></i> Report Issue
+          </a>
+        </li>
+      </ng-container>
+
+      <li routerLinkActive="is-active">
+        <a routerLink="/reporting/issue-view" (click)="Menu.style.width ='0%'">
+          <i class="fa fa-list" aria-hidden="true"></i> View Reports
+        </a>
+      </li>
+
+      <!--Admin-->
+      <ng-container *appUserManagementPrivileges>
+        <div class="header">User Management</div>
+        <li routerLinkActive="is-active">
+          <a routerLink="/admin/user-create" (click)="Menu.style.width ='0%'">
+            <i class="fa fa-user-plus" aria-hidden="true"></i> Create User
+          </a>
+        </li>
+        <li routerLinkActive="is-active">
+          <a routerLink="/admin/user-manage" (click)="Menu.style.width ='0%'">
+            <i class="fa fa-cog" aria-hidden="true"></i> Manage Users
+          </a>
+        </li>
+        <ng-container *appAdminPrivileges>
+          <li routerLinkActive="is-active">
+            <a routerLink="/admin/user-activity" (click)="Menu.style.width ='0%'">
+              <i class="fa fa-clipboard" aria-hidden="true"></i> User Activity
+            </a>
+          </li>
+        </ng-container>
+      </ng-container>
+
+      <!--Data Management-->
+      <div class="header">Issue Data</div>
+      <li routerLinkActive="is-active">
+        <a routerLink="/data/upload" (click)="Menu.style.width ='0%'">
+          <i class="fa fa-upload" aria-hidden="true"></i> Issue Upload
+        </a>
+      </li>
+      <ng-container *appDataManagementPrivileges>
+        <li routerLinkActive="is-active">
+          <a routerLink="/data/export" (click)="Menu.style.width ='0%'">
+            <i class="fa fa-download" aria-hidden="true"></i> Issue Export
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+
+</div>

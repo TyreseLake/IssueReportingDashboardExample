@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Update Description</h4>
+
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="descriptionForm"
+        autocomplete="off">
+
+        <div>
+          <app-text-area-input
+          [formControl]="$any(descriptionForm.controls['description'])"
+          [label]="'Description'"
+          [rows]='5'
+          [placeholder]="'Please enter a description of the issue.'"
+          ></app-text-area-input>
+        </div>
+
+  </form>
+
+  <div *ngIf="descriptionList.length == 0" class="mt-2 text-center">
+    <span class="text-muted">No descriptions to select.</span>
+  </div>
+
+  <div *ngIf="descriptionList.length > 0" class="row m-0 mt-2">
+    <div class="col-9 p-0 offset-3 dropend" [isOpen]="dropOpen" dropdown>
+      <button class="btn btn-sm btn-primary text-white dropdown-toggle" (click)="dropOpen = true" dropdownToggle>
+        Select Description
+      </button>
+
+      <div class="dropdown-menu p-1 mt-2" (click)="$event.stopPropagation()" *dropdownMenu>
+        <div *ngIf="descriptionList" class="list-group overflow-auto" style="min-width: 250px; max-height: 200px;">
+          <button *ngFor="let desc of descriptionList"
+            class="list-group-item list-group-item-action list-group-item-primary"
+            (click)="descriptionForm.controls['description']?.setValue(desc)"
+            (click)="dropOpen = false"
+            (click)="descriptionForm.markAllAsTouched()">
+            {{desc | truncate:[150]}}
+          </button>
+        </div>
+
+        <ng-container *ngIf="pagination.TotalItems > pageSize">
+          <div class="d-flex justify-content-center mt-2" *ngIf="descriptionList?.length > 0">
+            <pagination *ngIf="pagination"
+              [boundaryLinks]="true"
+              [totalItems]= "pagination.TotalItems"
+              [itemsPerPage]= "pagination.ItemsPerPage"
+              [(ngModel)]="pagination.CurrentPage"
+              (pageChanged)="pageChanged($event)"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;"
+            >
+            </pagination>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+  <button type="button" class="btn btn-success" [disabled]="!descriptionForm?.touched" (click)="updateIssueDescription()">Submit</button>
+</div>

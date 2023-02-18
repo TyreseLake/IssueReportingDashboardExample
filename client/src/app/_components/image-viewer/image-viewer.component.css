@@ -1,0 +1,45 @@
+.ngx-gallery-thumbnail .ngx-gallery-active
+{
+  border-color: #11998e !important;
+}
+
+.ngx-gallery-thumbnail
+{
+  border-color: #dddddd !important;
+  box-shadow: 0.125rem 0.125rem 0.15rem rgb(0 0 0 / 5%) !important;
+  text-align: center;
+  background-color: lightgray;
+}
+
+.ngx-gallery-image-wrapper {
+  box-shadow: 0.125rem 0.125rem 0.15rem rgb(0 0 0 / 10%) !important;
+  overflow-y: visible !important;
+  text-align: center;
+}
+
+.ngx-gallery-image-wrapper:before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 50px;
+  content: "\f03e";
+  white-space: pre;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.ngx-gallery-thumbnails-wrapper {
+  overflow-y: visible !important;
+}
+
+/* .ngx-gallery-thumbnail:before {
+  content: "x";
+  white-space: pre;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+} */

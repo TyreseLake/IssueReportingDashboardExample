@@ -1,0 +1,23 @@
+thead tr{
+  border-bottom-width: medium !important;
+  border-left: hidden;
+}
+
+
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.bg-darkblue
+{
+  color: white;
+  background-color: #027BCE;
+}
+
+.issues-table {
+  font-size: 0.9rem !important;
+}
+

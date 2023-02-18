@@ -1,0 +1,192 @@
+<div class="container-fluid ps-3">
+  <h2 class="mt-2">
+    <span class="text-primary-gradient">
+      Welcome<ng-container *ngIf="(accountService.currentUser$ | async) as user">,
+        <span *ngIf="user.firstName">{{user.firstName | titlecase}}<span *ngIf="user.lastName"> {{user.lastName | titlecase}}</span></span>
+        <span *ngIf="!user.firstName">{{user.userName}}</span>
+      </ng-container>
+    </span>
+  </h2>
+</div>
+
+<div class="container-fluid">
+  <div class="m-0 row justify-content-sm-start align-items-start justify-content-center">
+    <div class ="col-12 col-lg-4 px-1 d-flex align-items-center mt-2" style="max-width: 468px;">
+      <div *ngIf="issueTypeTotals" class="card border-top-primary shadow w-100" >
+        <span class="fa fa-thumbtack card-icon" style="transform: rotate(45deg);"></span>
+        <div class="card-body">
+          <h6 class="card-title pe-3 text-align-center">Pinned<span class="title-count">{{pinnedIssuesCount}}</span></h6>
+          <div *ngIf="pinnedIssues && pinnedIssues.length > 0" class="row pb-2 issue-items-container" >
+            <div *ngFor="let issue of pinnedIssues" class="col-12 issue-item" role="button" routerLink="/reporting/issue-view/{{issue['id']}}">
+              <div class="issue-item-content">
+                <span class="head text-secondary">{{issue['issueType']}}</span>
+                <span class="date text-muted">
+                  <span class="fa fa-thumbtack fa-xs me-1"></span>
+                  <span *ngIf="issue['dateReported'] != issue['dateUpdated']">updated: {{issue['dateUpdated'] | date}}</span>
+                  <span *ngIf="issue['dateReported'] == issue['dateUpdated']">created: {{issue['dateReported'] | date}}</span>
+                </span><br>
+                <span *ngIf="issue['district']">{{issue['district']}}<br></span>
+                <span *ngIf="issue['locationDescription']">{{issue['locationDescription']}}<br></span>
+                <span *ngIf="issue['description']">{{issue['description'] | truncate:[80]}}<br></span>
+                <div class="py-1 px-0 col-9 d-flex align-items-center">
+                  <ng-container *ngIf="issue['previousStatus']">
+                    <div
+                      class="desaturate text-white rounded-pill pill-body me-2"
+                      statusColor="{{issue['previousStatus']}}">
+                      <span class="d-lg-none">{{issue['previousStatus'] | truncate:[14]}}</span>
+                      <span class="d-none d-lg-block">{{issue['previousStatus']}}</span>
+                    </div>
+                    <span class="fa fa-arrow-right text-muted me-2"></span>
+                  </ng-container>
+                  <div class="text-white rounded-pill pill-body" statusColor="{{issue['status']}}">
+                    <span class="d-lg-none">{{issue['status'] | truncate:[14]}}</span>
+                    <span class="d-none d-lg-block">{{issue['status']}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!pinnedIssues || pinnedIssues.length == 0" class="issue-items-container-empty">
+            <div class="text-muted">
+              <span>No pinned issues active.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class ="col-12 col-lg-4 px-1 d-flex align-items-center mt-2" style="max-width: 468px;">
+      <div *ngIf="issueTypeTotals" class="card border-top-primary shadow  w-100">
+        <span class="card-icon" style="top: 0; right: 4px; font-family: Impact;">NEW</span>
+        <div class="card-body">
+          <h6 class="card-title pe-3 text-align-center">New<span class="title-count">{{recentAdditionsCount}}</span></h6>
+          <div *ngIf="recentAdditions && recentAdditions.length > 0" class="row pb-2 issue-items-container" >
+            <div *ngFor="let issue of recentAdditions" class="col-12 issue-item" role="button" routerLink="/reporting/issue-view/{{issue['id']}}">
+              <div class="issue-item-content">
+                <span class="head text-secondary">{{issue['issueType']}}</span>
+                <span class="date text-muted">
+                  <span *ngIf="issue['pinned']" class="fa fa-thumbtack fa-xs me-1"></span>
+                  <span *ngIf="issue['dateReported'] != issue['dateUpdated']">updated: {{issue['dateUpdated'] | date}}</span>
+                  <span *ngIf="issue['dateReported'] == issue['dateUpdated']">created: {{issue['dateReported'] | date}}</span>
+                </span><br>
+                <span *ngIf="issue['district']">{{issue['district']}}<br></span>
+                <span *ngIf="issue['locationDescription']">{{issue['locationDescription']}}<br></span>
+                <span *ngIf="issue['description']">{{issue['description'] | truncate:[80]}}<br></span>
+                <div class="py-1 px-0 col-9 d-flex align-items-center">
+                  <ng-container *ngIf="issue['previousStatus']">
+                    <div
+                      class="desaturate text-white rounded-pill pill-body me-2"
+                      statusColor="{{issue['previousStatus']}}">
+                      <span class="d-lg-none">{{issue['previousStatus'] | truncate:[14]}}</span>
+                      <span class="d-none d-lg-block">{{issue['previousStatus']}}</span>
+                    </div>
+                    <span class="fa fa-arrow-right text-muted me-2"></span>
+                  </ng-container>
+                  <div class="text-white rounded-pill pill-body" statusColor="{{issue['status']}}">
+                    <span class="d-lg-none">{{issue['status'] | truncate:[14]}}</span>
+                    <span class="d-none d-lg-block">{{issue['status']}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!recentAdditions || recentAdditions.length == 0" class="issue-items-container-empty">
+            <div class="text-muted">
+              <span>No new issues.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class ="col-12 col-lg-4 px-1 d-flex align-items-center mt-2" style="max-width: 468px;">
+      <div *ngIf="issueTypeTotals" class="card border-top-primary shadow  w-100">
+        <div class="card-body">
+          <span class="fa fa-undo card-icon"></span>
+          <h6 class="card-title pe-3 text-align-center">Updated<span class="title-count">{{recentUpdatesCount}}</span></h6>
+          <div *ngIf="recentUpdates && recentUpdates.length > 0" class="row pb-2 issue-items-container" >
+            <div *ngFor="let issue of recentUpdates" class="col-12 issue-item" role="button" routerLink="/reporting/issue-view/{{issue['id']}}">
+              <div class="issue-item-content">
+                <span class="head text-secondary">{{issue['issueType']}}</span>
+                <span class="date text-muted">
+                  <span *ngIf="issue['pinned']" class="fa fa-thumbtack fa-xs me-1"></span>
+                  <span *ngIf="issue['dateReported'] != issue['dateUpdated']">updated: {{issue['dateUpdated'] | date}}</span>
+                  <span *ngIf="issue['dateReported'] == issue['dateUpdated']">created: {{issue['dateReported'] | date}}</span>
+                </span><br>
+                <span *ngIf="issue['district']">{{issue['district']}}<br></span>
+                <span *ngIf="issue['locationDescription']">{{issue['locationDescription']}}<br></span>
+                <span *ngIf="issue['description']">{{issue['description'] | truncate:[80]}}<br></span>
+                <div class="py-1 px-0 col-9 d-flex align-items-center">
+                  <ng-container *ngIf="issue['previousStatus']">
+                    <div
+                      class="desaturate text-white rounded-pill pill-body me-2"
+                      statusColor="{{issue['previousStatus']}}">
+                      <span class="d-lg-none">{{issue['previousStatus'] | truncate:[14]}}</span>
+                      <span class="d-none d-lg-block">{{issue['previousStatus']}}</span>
+                    </div>
+                    <span class="fa fa-arrow-right text-muted me-2"></span>
+                  </ng-container>
+                  <div class="text-white rounded-pill pill-body" statusColor="{{issue['status']}}">
+                    <span class="d-lg-none">{{issue['status'] | truncate:[14]}}</span>
+                    <span class="d-none d-lg-block">{{issue['status']}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!recentUpdates || recentUpdates.length == 0" class="issue-items-container-empty">
+            <div class="text-muted">
+              <span>No recent issues.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="issueTypeTotals" class ="col-12 px-1 d-flex align-items-center mt-2" style="max-width: 468px; overflow: visible !important;">
+      <div class="card shadow w-100 no-chart-overflow border-top-primary align-items-center" style="overflow: visible !important;">
+        <ng-container *ngIf="issueTypeTotals['data'].length > 0">
+          <google-chart #chart
+            [title]="issueTypeTotals['title']"
+            [type]="issueTypeTotals['type']"
+            [data]="issueTypeTotals['data']"
+            [columns]="issueTypeTotals['columnNames']"
+            [options]="issueTypeTotals['options']"
+            [width]="issueTypeTotals['width']"
+            [height]="issueTypeTotals['height']">
+          </google-chart>
+        </ng-container>
+        <ng-container *ngIf="issueTypeTotals['data'].length == 0">
+          <div class="text-muted issue-items-container-empty my-3">
+            No issues to display.
+          </div>
+        </ng-container>
+        <!-- <google-chart #chart
+          [title]="issueTypeTotals['title']"
+          [type]="issueTypeTotals['type']"
+          [data]="issueTypeTotals['data']"
+          [columns]="issueTypeTotals['columnNames']"
+          [options]="issueTypeTotals['options']"
+          [width]="issueTypeTotals['width']"
+          [height]="issueTypeTotals['height']">
+        </google-chart> -->
+      </div>
+    </div>
+
+    <div *ngIf="districtTotals && districtTotals['data'].length > 0"  class ="col-12 px-1 d-flex align-items-center mt-2" style="max-width: 468px; overflow: visible !important;">
+      <div class="card shadow  w-100 no-chart-overflow border-top-primary align-items-center" style="overflow: visible !important;">
+        <google-chart #chart
+          [title]="districtTotals['title']"
+          [type]="districtTotals['type']"
+          [data]="districtTotals['data']"
+          [columns]="districtTotals['columnNames']"
+          [options]="districtTotals['options']"
+          [width]="districtTotals['width']"
+          [height]="districtTotals['height']">
+        </google-chart>
+      </div>
+    </div>
+  </div>
+</div>
+
+

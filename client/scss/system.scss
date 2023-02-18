@@ -1,0 +1,68 @@
+//$body-bg: #fffff8;
+
+$primary-gradient: linear-gradient(180deg, #11998e, #38ef7d);
+
+.bg-primary-gradient {
+  background: linear-gradient(200deg, #11998e, rgb(56, 239, 125));
+}
+
+/*
+.btn.bg-primary-gradient{
+  transition: transform 500ms;
+}
+
+.btn.bg-primary-gradient:hover{
+  transform: scale(1.05);
+}
+*/
+
+.text-primary-gradient{
+	background: linear-gradient(170deg, #11998e, #38ef7d);
+  background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+};
+
+$primary: #11998e;
+$indigo: #2A2461;
+
+.text-indigo{
+  color: $indigo !important;
+}
+
+// .icon-input {
+//   position: relative;
+// }
+
+// .icon-input:after {
+//   // content: "\f002";
+//   font-family: "FontAwesome";
+//   display: flex;
+//   font-size: larger;
+//   align-items: center;
+//   justify-content: center;
+//   right: 0;
+//   position:absolute;
+//   top:0;
+//   width: 2.25rem;
+//   height:100%;
+// }
+
+// .icon-input.edit-icon:after {
+//   content: "\f040"
+// }
+
+// .icon-input input.form-control{
+//   background: none !important;
+//   padding-right: 2.25rem;
+// }
+
+//Include all of Bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+$theme-colors: (
+  "indigo": $indigo
+);
+
+
+

@@ -1,0 +1,46 @@
+<div class="modal-header text-center">
+  <h4 class="modal-title pull-left">Select Issue</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body p-0">
+  <div *ngIf="issueStatuses?.length > 0">
+    <app-issues-table
+      [issueStatuses] = issueStatuses
+      [selected] = selected
+      [issueStatusId] = issueStatusId
+      (selectEvent)="setSelected($event)"
+    ></app-issues-table>
+    <div class="px-2 mt-1 " *ngIf="allowNew">
+      <button class="btn bg-add btn-light text-center p-0 w-100" (click)="selectNew()"><i class="fa fa-plus fa-sm me-1"></i> Add New Issue</button>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center mt-2" *ngIf="issueStatuses?.length > 0">
+    <pagination *ngIf="pagination"
+      [boundaryLinks]="true"
+      [totalItems]= "pagination.TotalItems"
+      [itemsPerPage]= "pagination.ItemsPerPage"
+      [maxSize]="7"
+      [(ngModel)]="pagination.CurrentPage"
+      (pageChanged)="pageChanged($event)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
+  </div>
+
+  <div *ngIf="!(issueStatuses?.length > 0)" class="ms-3 my-3">
+    <span class=" text-muted">
+      No issues found.
+    </span>
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+  <!-- <button type="button" class="btn bg-darkblue text-white" (click)="selectNew()">New Issue</button> -->
+  <button type="button" class="btn btn-success" [disabled]="!selected" (click)="selectIssue()">Select Issue</button>
+</div>

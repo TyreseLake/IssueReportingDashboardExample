@@ -1,0 +1,270 @@
+<div class="card mb-3" [class.border-info]="editing" >
+  <div class="card-header text-center py-1" [class.bg-editing]="editing">
+    <ng-container *ngIf="index">{{index}}</ng-container>
+  </div>
+  <div class="card-body overflow-auto py-1">
+    <div *ngIf="allowEditing" class="text-center" style="text-align: right;">
+      <a (click)="toggleEditing()"
+        [class.text-secondary]="editing"
+        class="text-decoration-none"
+        style="cursor: pointer;"
+        title="Edit issue report">
+        <ng-container *ngIf="!editing">
+          <span class="d-none d-md-inline pe-2">Edit</span>
+          <i class="fa fa-edit"></i>
+        </ng-container>
+        <ng-container *ngIf="editing">
+          <span class="d-none d-md-inline pe-1">Cancel</span>
+          <i class="fa fa-sm fa-times"></i>
+        </ng-container>
+      </a>
+    </div>
+    <table class="table details-table table-sm table-borderless">
+      <tbody>
+        <tr>
+          <td>Uploader</td>
+          <td class="w-100" title="User Name: {{statusUpdate['userName']}}">{{statusUpdate['uploader']}}</td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td class="d-flex align-items-center">
+            <ng-container *ngIf="statusUpdate['previousStatus'] != statusUpdateInfo['status'] && !editing">
+              <div class="px-2 text-white rounded-pill pill-body me-2 desaturate" statusColor="{{statusUpdate['previousStatus']}}">
+                <span class="d-lg-none" >{{statusUpdate["previousStatus"] | truncate:[10]}}</span>
+                <span class="d-none d-lg-block">{{statusUpdate["previousStatus"]}}</span>
+              </div>
+              <span class="fa fa-arrow-right text-muted me-2"></span>
+            </ng-container>
+            <div class="px-2 text-white rounded-pill pill-body" statusColor="{{statusUpdateInfo['status']}}">
+              <span class="d-lg-none">{{statusUpdateInfo["status"] | truncate:[10]}}</span>
+              <span class="d-none d-lg-block">{{statusUpdateInfo["status"]}}</span>
+            </div>
+            <div *ngIf="editing"
+              class="text-primary"
+              style="font-size: 0.85rem; white-space:nowrap;"
+              role="button"
+              (click)="openStatusUpdateModel()">
+              <span class="ms-2 me-1 fa fa-plus fa-sm"></span><span>Edit Status</span>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="editing">
+          <td>Previous Status</td>
+          <td>
+            <div class="px-2 text-white rounded-pill pill-body desaturate" statusColor="{{statusUpdate['previousStatus']}}">
+              <span class="d-lg-none">{{statusUpdate["previousStatus"] | truncate:[10]}}</span>
+              <span class="d-none d-lg-block">{{statusUpdate["previousStatus"]}}</span>
+            </div>
+          </td>
+        </tr>
+        <ng-container *ngIf="statusUpdateInfo['status']">
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'Under Review'">
+            <tr>
+              <td>Date Started</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Reviewer</td>
+              <td *ngIf="statusUpdateInfo['responsibleUnit']">{{statusUpdateInfo['responsibleUnit']}}</td>
+              <!-- <td *ngIf="statusUpdate['previousStatus'] != statusUpdate['status']" class="d-flex align-items-center">
+              <div class="px-2 text-white rounded-pill pill-body me-2 desaturate" statusColor="{{statusUpdate['previousStatus']}}">
+                <span class="d-lg-none" >{{statusUpdate["previousStatus"] | truncate:[10]}}</span>
+                <span class="d-none d-lg-block">{{statusUpdate["previousStatus"]}}</span>
+              </div>
+              <span class="fa fa-arrow-right text-muted"></span>
+              <div class="px-2 text-white rounded-pill pill-body ms-2" statusColor="{{statusUpdate['status']}}">
+                <span class="d-lg-none">{{statusUpdate["status"] | truncate:[10]}}</span>
+                <span class="d-none d-lg-block">{{statusUpdate["status"]}}</span>
+              </div>
+            </td> -->
+            </tr>
+            <tr>
+              <td>Additional Details</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'Under Investigation'">
+            <tr>
+              <td>Date Started</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Investigator</td>
+              <td *ngIf="statusUpdateInfo['responsibleUnit']">{{statusUpdateInfo['responsibleUnit']}}</td>
+              <td *ngIf="!statusUpdateInfo['responsibleUnit']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Additional Details</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'Pending Approval'">
+            <tr>
+              <td>Date Started</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Approvals</td>
+              <td *ngIf="statusUpdateInfo['approvalItems']?.length > 0">
+                <ol class="list-group list-group-flush list-group-numbered">
+                  <li *ngFor="let item of statusUpdateInfo['approvalItems']" class="ps-1 pt-0 pb-1 list-group-item">{{item}}</li>
+                </ol>
+              </td>
+              <td *ngIf="!statusUpdateInfo['approvalItems'] || statusUpdateInfo['approvalItems']?.length == 0" class="text-muted">None</td>
+            </tr>
+            <tr>
+              <td>Approval Details</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'In Progress'">
+            <tr>
+              <td>Date Started</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Details</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+            <tr>
+              <td>Contraction / Work Type</td>
+              <td *ngIf="statusUpdateInfo['workType']">{{statusUpdateInfo['workType']}}</td>
+              <td *ngIf="!statusUpdateInfo['workType']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Unit / Division / Contractor</td>
+              <td *ngIf="statusUpdateInfo['responsibleUnit']">{{statusUpdateInfo['responsibleUnit']}}</td>
+              <td *ngIf="!statusUpdateInfo['responsibleUnit']" class="text-muted">Not specified</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'Paused/On Hold'">
+            <tr>
+              <td>Date Paused</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Reason for Pause</td>
+              <td *ngIf="statusUpdateInfo['reasonDetails']">{{statusUpdateInfo['reasonDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['reasonDetails']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Additional Details</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'Cancelled'">
+            <tr>
+              <td>Date Cancelled</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Reason for Cancellation</td>
+              <td *ngIf="statusUpdateInfo['reasonDetails']">{{statusUpdateInfo['reasonDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['reasonDetails']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Details of Cancellation</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'Not Within Ministry Remit'">
+            <tr>
+              <td>Date Changed</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Reason for Change</td>
+              <td *ngIf="statusUpdateInfo['reasonDetails']">{{statusUpdateInfo['reasonDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['reasonDetails']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Agency Responsible</td>
+              <td *ngIf="statusUpdateInfo['newUnit']">{{statusUpdateInfo['newUnit']}}</td>
+              <td *ngIf="!statusUpdateInfo['newUnit']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Details of Change</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="statusUpdateInfo['status'] == 'Completed'">
+            <tr>
+              <td>Date Completed</td>
+              <td *ngIf="statusUpdateInfo['date']">{{statusUpdateInfo['date'] | date:'MMM d, y'}}</td>
+              <td *ngIf="!statusUpdateInfo['date']" class="text-muted">Not specified</td>
+            </tr>
+            <tr>
+              <td>Details of Completion</td>
+              <td *ngIf="statusUpdateInfo['statusUpdateDetails']">{{statusUpdateInfo['statusUpdateDetails']}}</td>
+              <td *ngIf="!statusUpdateInfo['statusUpdateDetails']" class="text-muted">None</td>
+            </tr>
+          </ng-container>
+
+          <ng-container *ngIf="statusUpdate['images']?.length > 0">
+            <tr>
+              <td colspan="2">
+                <a class="text-decoration-none d-flex align-items-center"
+                  role="button"
+                  style="font-weight: normal;"
+                  (click)="!showImages[statusUpdate['id']] || showImages[statusUpdate['id']] == false ? showImages[statusUpdate['id']] = true : showImages[statusUpdate['id']] = false">
+                  <span *ngIf="!(showImages[statusUpdate['id']] == true)" class="d-flex align-items-center"><span class="fa fa-plus me-1 align-middle"></span>Show Images</span>
+                  <span *ngIf="showImages[statusUpdate['id']] == true" class="text-muted d-flex align-items-center"><span class="fa fa-times me-1 align-middle"></span>Hide Images</span>
+                </a>
+              </td>
+            </tr>
+
+            <ng-container *ngIf="showImages[statusUpdate['id']]">
+              <tr>
+                <td colspan="2">
+                  <div>
+                    <app-image-viewer
+                      [imageUrls]="statusUpdate['images']"
+                    ></app-image-viewer>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <!-- <tr>
+          <td>Remark</td>
+          <td>{{statusUpdate["remark"]}}</td>
+        </tr> -->
+        <!-- <tr>
+          <td>Date</td>
+          <td>{{statusUpdate["dateRemarked"] | date:'MMM d, y, h:mm a'}}</td>
+        </tr> -->
+      </tbody>
+    </table>
+    <!-- <div *ngIf="editing" class="text-center" style="text-align: right;">
+      <button
+        type="submit"
+        [disabled]="!updatedInfo"
+        [class.btn-secondary]="!updatedInfo"
+        (click)="submitEdit()"
+        class="btn btn-sm btn-primary text-white mb-1 p-0 border border-1 rounded-pill"
+        style="width: 110px;" type="submit">
+          Save Changes
+      </button>
+    </div> -->
+  </div>
+  <div class="card-footer text-center py-1" [class.bg-editing]="editing">
+    <ng-container *ngIf="statusUpdate['dateReported']">
+      {{statusUpdate["dateReported"] | timeago}}
+    </ng-container>
+  </div>
+</div>

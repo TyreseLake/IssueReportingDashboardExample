@@ -1,0 +1,672 @@
+<div class="container-fluid ps-3">
+  <h2 class="mt-2 mb-2">
+    <span class="text-primary-gradient">
+      <i class="fa fa-list"></i>
+      View Issue Reports
+    </span>
+  </h2>
+
+  <!--Options-->
+  <div class="mt-2">
+    <form #filtersForm="ngForm"
+          autocomplete="off">
+      <div class="row">
+        <!-- Search Bar -->
+        <div class="col-12 col-md-8 col-lg-5">
+          <div class="input-group">
+            <input [(ngModel)]="issueReportsParams.key"
+                   name="key"
+                   type="text"
+                   class="form-control"
+                   placeholder="Search"
+                   (keyup.enter)="reloadReports()">
+            <button
+              class="input-group-text bg-transparent"
+              style="text-decoration:none; cursor: pointer;"
+              (click)="reloadReports()">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!--Filter Select-->
+        <div class="col-12 col-md-8 col-lg-4 mt-1 justify-content-center justify-content-lg-start d-flex">
+          <div class="dropdown" dropdown>
+            <button class="px-1 py-0 btn btn-primary btn-sm text-white rounded-pill dropdown-toggle" style="width:100px;" dropdownToggle>
+              <i class="fa fa-filter pe-1"></i>
+              Filters
+            </button>
+
+            <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+              <form class="px-3 py-1">
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="showClosed"
+                        [(ngModel)]="issueReportsParams.showClosed"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="filtersForm.control.markAsDirty()"/>
+                  <label class="form-check-label" for="showClosed">
+                    Show Closed/Completed
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="showHidden"
+                        [(ngModel)]="issueReportsParams.showHidden"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="filtersForm.control.markAsDirty()"/>
+                  <label class="form-check-label" for="showHidden">
+                    Show Hidden
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="pinned"
+                        [(ngModel)]="issueReportsParams.pinnedOnTop"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="filtersForm.control.markAsDirty()"/>
+                  <label class="form-check-label" for="pinned">
+                    Pinned On Top
+                  </label>
+                </div>
+
+                <span>Filter By: </span>
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="dateRange"
+                        [checked]="selectedFilters['dateRange']"
+                        (change)="toggleDateRange()"/>
+                  <label class="form-check-label" for="dateRange">
+                    Date Range
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="reportCount"
+                        [checked]="selectedFilters['reportCount']"
+                        (change)="toggleReportCount()"/>
+                  <label class="form-check-label" for="reportCount">
+                    Report Count
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="issueType"
+                        [checked]="selectedFilters['issueType']"
+                        (change)="toggleIssueType()"/>
+                  <label class="form-check-label" for="issueType">
+                    Issue Type
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="district"
+                        [checked]="selectedFilters['district']"
+                        (change)="toggleDistrict()"/>
+                  <label class="form-check-label" for="district">
+                    District
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox"
+                        class="form-check-input"
+                        id="issueStatus"
+                        [checked]="selectedFilters['status']"
+                        (change)="toggleStatus()"/>
+                  <label class="form-check-label" for="issueStatus">
+                    Issue Status
+                  </label>
+                </div>
+
+                <div class="mt-1 text-center">
+                  <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                    (click)="resetParams()"
+                    (click)="filtersForm.control.markAsDirty()">
+                    Reset Filters
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+         <div class="dropdown" dropdown>
+            <button class="ms-1 px-1 py-0 btn btn-primary btn-sm text-white rounded-pill dropdown-toggle" style="width:100px;" dropdownToggle>
+              <i class="fa fa-sort pe-1"></i>
+              Sort By
+            </button>
+
+            <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+              <form class="px-3 py-1">
+                <span>Sort By: </span>
+
+                <select name="status"
+                  class="form-select"
+                  (change)="filtersForm.control.markAsDirty()"
+                  [(ngModel)]="issueReportsParams.sortBy">
+                  <option value="" hidden disabled selected>--Select--</option>
+                  <option value="DateReported">Date Reported</option>
+                  <option value="DateUpdated">Date Updated</option>
+                  <option value="Type">Type</option>
+                  <option value="Reports">No. of Reports</option>
+                  <option value="Status">Status</option>
+                </select>
+
+                <div class="d-flex justify-content-center mt-2">
+                  <div class="btn-group mx-0" role="group">
+                    <button type="button"
+                      (click)="issueReportsParams.order = 'Ascending'"
+                      (click)="filtersForm.control.markAsDirty()"
+                      [ngClass]="{'btn-secondary': issueReportsParams.order == 'Ascending', 'btn-light': issueReportsParams.order != 'Ascending'}"
+                      class="btn border btn-sm btn-left py-0">
+                        Ascending
+                    </button>
+                    <button type="button"
+                      (click)="issueReportsParams.order = 'Descending'"
+                      (click)="filtersForm.control.markAsDirty()"
+                      [ngClass]="{'btn-secondary': issueReportsParams.order == 'Descending', 'btn-light': issueReportsParams.order != 'Descending'}"
+                      class="btn border btn-sm btn-right py-0">
+                        Descending
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div>
+            <button class="ms-1 px-1 py-0 btn btn-secondary btn-sm text-white rounded-pill"
+              [disabled]="!(canReset)"
+              (click)="resetParams()"
+              (click)="filtersForm.control.markAsDirty()"
+              style="width:80px;">
+              <i class="fa fa-undo pe-1"></i>
+              Reset
+            </button>
+          </div>
+
+          <div>
+            <button [disabled]="!filtersForm.dirty"
+                    class="ms-1 px-1 py-0 btn btn-success btn-sm text-white rounded-pill"
+                    style="width:80px;"
+                    (click)="reloadReports()">
+              <i class="fa fa-check pe-1"></i>
+              Apply
+            </button>
+          </div>
+        </div>
+
+        <!-- Date Range -->
+        <div @fadeInOut class="col-12 col-md-9 col-lg-7 row m-0 mt-1" *ngIf="selectedFilters['dateRange']">
+          <div class="col-4 p-0 ps-2 d-flex align-items-center">
+            <span>Date Range: </span>
+          </div>
+          <div class="col-4 p-0 ps-1">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                name="dateUpper"
+                [(ngModel)]="issueReportsParams.dateLower"
+                placeholder="After"
+                bsDatepicker
+                [bsConfig]="bsConfig"
+                [maxDate]="maxDate"
+              />
+            </div>
+          </div>
+          <div class="col-4 p-0 ps-1">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                name="dateLower"
+                [(ngModel)]="issueReportsParams.dateUpper"
+                placeholder="Before"
+                bsDatepicker
+                [bsConfig]="bsConfig"
+                [maxDate]="maxDate"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Number of Reports -->
+        <div @fadeInOut class="col-12 col-md-9 col-lg-7 row m-0 mt-1" *ngIf="selectedFilters['reportCount']">
+          <div class="col-4 p-0 ps-2 d-flex align-items-center">
+            <span>No. of Reports: </span>
+          </div>
+          <div class="col-4 p-0 ps-1">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                name="minReportCount"
+                [(ngModel)]="issueReportsParams.minReportCount"
+                placeholder="At Least"
+                appNumbersOnly
+              />
+            </div>
+          </div>
+          <div class="col-4 p-0 ps-1">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                name="maxReportCount"
+                [(ngModel)]="issueReportsParams.maxReportCount"
+                placeholder="At Most"
+                appNumbersOnly
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Issue Type -->
+        <div @fadeInOut class="col-12 col-md-9 col-lg-7 row m-0 mt-1" *ngIf="selectedFilters['issueType']">
+          <div class="col-4 p-0 ps-2 d-flex align-items-center">
+            <span>Issue Types: </span>
+          </div>
+          <div class="col-4 p-0 ps-1 d-flex align-items-center">
+            <div class="dropdown w-100" dropdown>
+              <button class="ps-3 py-1 btn btn-light bg-white border w-100 d-flex align-items-center justify-content-between" dropdownToggle>
+                <span class="align-text-bottom">Issue Types </span>
+                <span class="fa fa-angle-down fa-lg"></span>
+              </button>
+
+              <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+                <form class="px-3 py-1">
+                  <div class="form-group mb-1 ">
+                    <div class="input-group input-group-sm">
+                      <input type="text"
+                             class="form-control"
+                             placeholder="Search"
+                             [(ngModel)]="searchIssueTypes"
+                             [ngModelOptions]="{standalone: true}">
+                      <span class="input-group-text bg-transparent" disabled>
+                        <i class="fa fa-search"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <ng-container *ngIf="issueTypes?.length > 0">
+                    <div class="overflow-auto" style="max-height: 250px;">
+                      <ng-container *ngFor="let type of issueTypes">
+                        <ng-container *ngIf="!searchIssueTypes || searchIssueTypes == '' || type.toUpperCase().includes(searchIssueTypes.toLocaleUpperCase())">
+                          <div class="form-check">
+                              <input type="checkbox"
+                                    class="form-check-input"
+                                    id="{{type}}"
+                                    value="{{type}}"
+                                    [checked]="selectedIssueTypesSet.has(type)"
+                                    (change)="updateIssueTypeChecklist($event)"
+                                    (change)="filtersForm.control.markAsDirty()">
+                              <label class="form-check-label" for="{{type}}">
+                                {{type}}
+                              </label>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                  <div class="mt-1 text-center">
+                    <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                            (click)="clearIssueTypeChecklist()">
+                      Clear
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 p-0 ps-1 d-flex align-items-center">
+            <div><span [class.text-primary]="selectedIssueTypesSet.size > 0" [class.text-muted]="selectedIssueTypesSet.size==0" class="ps-2" >{{selectedIssueTypesSet.size}} Selected</span></div>
+            <!-- <div><span [class.text-primary]="selectedIssueTypesCount > 0" [class.text-muted]="selectedIssueTypesCount==0" class="ps-2" >{{selectedIssueTypesCount}} Selected</span></div> -->
+          </div>
+        </div>
+
+        <!-- District -->
+        <div @fadeInOut class="col-12 col-md-9 col-lg-7 row m-0 mt-1" *ngIf="selectedFilters['district']">
+          <div class="col-4 p-0 ps-2 d-flex align-items-center">
+            <span>Districts: </span>
+          </div>
+          <div class="col-4 p-0 ps-1 d-flex">
+            <div class="dropdown w-100" dropdown>
+              <button class="ps-3 py-1 btn btn-light bg-white border w-100 d-flex align-items-center justify-content-between" dropdownToggle>
+                <span class="align-text-bottom">Districts </span>
+                <span class="fa fa-angle-down fa-lg"></span>
+              </button>
+
+              <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+                <form class="px-3 py-1">
+                  <div class="form-group mb-1 ">
+                    <div class="input-group input-group-sm">
+                      <input type="text"
+                             class="form-control"
+                             placeholder="Search"
+                             [(ngModel)]="searchDistricts"
+                             [ngModelOptions]="{standalone: true}">
+                      <span class="input-group-text bg-transparent" disabled>
+                        <i class="fa fa-search"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <ng-container *ngIf="districts?.length > 0">
+                    <div class="overflow-auto" style="max-height: 250px;">
+                      <ng-container  *ngFor="let district of districts">
+                        <ng-container *ngIf="!searchDistricts || searchDistricts == '' || district.toUpperCase().includes(searchDistricts.toLocaleUpperCase())">
+                          <div class="form-check">
+                            <input type="checkbox"
+                                  class="form-check-input"
+                                  id="{{district}}"
+                                  value="{{district}}"
+                                  [checked]="selectedDistrictsSet.has(district)"
+                                  (change)="updateDistrictChecklist($event)"
+                                  (change)="filtersForm.control.markAsDirty()">
+                            <label class="form-check-label" for="{{district}}">
+                              {{district}}
+                            </label>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+
+                  <div class="mt-1 text-center">
+                    <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                            (click)="clearDistrictChecklist()">
+                      Clear
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 p-0 ps-1 d-flex align-items-center">
+            <div><span [class.text-primary]="selectedDistrictsSet.size > 0" [class.text-muted]="selectedDistrictsSet.size==0" class="ps-2" >{{selectedDistrictsSet.size}} Selected</span></div>
+          </div>
+        </div>
+
+        <!-- Status Type -->
+        <!-- <div @fadeInOut class="col-12 col-md-9 col-lg-7 row m-0 mt-1" *ngIf="selectedFilters['status']">
+          <div class="col-4 p-0 ps-2 d-flex align-items-center">
+            Status:
+          </div>
+
+          <div *ngIf="statusList" class="col-4 p-0 ps-1 d-flex align-items-center">
+            <select name="status"
+                [(ngModel)]="issueReportsParams.status"
+                class="form-select">
+              <option value="" hidden disabled selected>--Select Status--</option>
+              <option value="">Any</option>
+              <option *ngFor="let status of statusList" value="{{status}}">{{status}}</option>
+            </select>
+          </div>
+        </div> -->
+
+        <div @fadeInOut class="col-12 col-md-9 col-lg-7 row m-0 mt-1" *ngIf="selectedFilters['status']">
+          <div class="col-4 p-0 ps-2 d-flex align-items-center">
+            <span>Status: </span>
+          </div>
+          <div class="col-4 p-0 ps-1 d-flex align-items-center">
+            <div class="dropdown w-100" dropdown>
+              <button class="ps-3 py-1 btn btn-light bg-white border w-100 d-flex align-items-center justify-content-between" dropdownToggle>
+                <span class="align-text-bottom">Statuses </span>
+                <span class="fa fa-angle-down fa-lg"></span>
+              </button>
+
+              <div class="dropdown-menu mt-2" style="min-width: 250px" (click)="$event.stopPropagation()" *dropdownMenu>
+                <form class="px-3 py-1">
+                  <div class="form-group mb-1 ">
+                    <div class="input-group input-group-sm">
+                      <input type="text"
+                             class="form-control"
+                             placeholder="Search"
+                             [(ngModel)]="searchStatus"
+                             [ngModelOptions]="{standalone: true}">
+                      <button class="input-group-text bg-transparent" disabled>
+                        <i class="fa fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <ng-container *ngIf="statusList?.length > 0">
+                    <div class="overflow-auto" style="max-height: 250px;">
+                      <ng-container *ngFor="let status of statusList">
+                        <ng-container *ngIf="!searchStatus || searchStatus == '' || status.toUpperCase().includes(searchStatus.toLocaleUpperCase())">
+
+                          <div class="form-check" >
+                            <input type="checkbox"
+                                  class="form-check-input"
+                                  id="{{status}}"
+                                  value="{{status}}"
+                                  [checked]="selectedStatusesSet.has(status)"
+                                  (change)="updateStatusChecklist($event)"
+                                  (change)="filtersForm.control.markAsDirty()">
+                            <label class="form-check-label" for="{{status}}">
+                              {{status}}
+                            </label>
+                          </div>
+
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+
+                  <div class="mt-1 text-center">
+                    <button class="btn btn-light btn-sm py-0 px-4 border rounded-pill"
+                            (click)="updateStatusChecklist($event)">
+                      Clear
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 p-0 ps-1 d-flex align-items-center">
+            <div><span [class.text-primary]="selectedStatusesSet.size > 0" [class.text-muted]="selectedStatusesSet.size==0" class="ps-2" >{{selectedStatusesSet.size}} Selected</span></div>
+          </div>
+        </div>
+
+        <!-- Selection Options -->
+        <div class="col-12 col-md-8" style="height: 26px;">
+          <div @fadeInOut *ngIf="selected.size > 0" class="justify-content-center justify-content-lg-start d-flex">
+            <div title="Pin Selected Items" *ngIf="unpin.size == 0">
+              <button
+                      class="ms-1 px-1 py-0 btn btn-white btn-sm text-primary rounded-pill text-center"
+                      style="width:25px;"
+                      type="button"
+                      [disabled]="selected.size == 0"
+                      (click)="pinIssues()">
+                <i class="fa fa-thumbtack"></i>
+                <!-- Pin -->
+              </button>
+            </div>
+            <div title="Unpin Selected Items" *ngIf="unpin.size > 0">
+              <button
+                      class="ms-1 px-1 py-0 btn btn-white btn-sm text-secondary rounded-pill text-center"
+                      style="width:25px;"
+                      type="button"
+                      [disabled]="selected.size == 0"
+                      (click)="pinIssues()">
+                <i class="fa fa-thumbtack" style="transform: rotate(45deg);"></i>
+                <!-- Unpin -->
+              </button>
+            </div>
+
+            <div title="Hide Selected Items" *ngIf="hidden.size == 0">
+              <button
+                      class="ms-1 px-1 py-0 btn btn-white btn-sm text-primary rounded-pill text-center"
+                      style="width:25px;"
+                      [disabled]="selected.size == 0"
+                      (click)="hideIssues()">
+                <i class="fa fa-eye-slash"></i>
+                <!-- Hide -->
+              </button>
+            </div>
+
+            <div title="Unide Selected Items" *ngIf="hidden.size > 0">
+              <button
+                      class="ms-1 px-1 py-0 btn btn-white btn-sm text-secondary rounded-pill text-center"
+                      style="width:25px;"
+                      [disabled]="selected.size == 0"
+                      (click)="hideIssues()">
+                <i class="fa fa-eye"></i>
+                <!-- Unhide -->
+              </button>
+            </div>
+
+            <div class="ms-2">
+              <span class="text-muted" style="vertical-align: middle;">
+                Selected: {{selected.size}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row" *ngIf="issueStatuses?.length === 0">
+  <p class="ms-4 text-muted">No Issues Found.</p>
+</div>
+
+<!--Table-->
+<div class="table-responsive p-0 issues-table" *ngIf="issueStatuses?.length > 0">
+  <table class="table table-sm table-hover table-striped">
+    <thead class="text-primary">
+      <tr>
+        <th scope="col" class="align-middle" style="width: 40px !important;">
+          <input class="form-check-input"
+            type="checkbox"
+            [title]="selected.size > 0 ? 'Deselect All' : 'Select All'"
+            (click)="$event.stopPropagation()"
+            (change)="selectAll($event)"
+            [checked]="selected.size > 0">
+        </th>
+        <th scope="col" class="text-center align-middle">Type</th>
+        <th scope="col" class="text-center align-middle">Description</th>
+        <th scope="col" class="text-center align-middle">Location</th>
+        <th scope="col" class="text-center align-middle">
+          <span class="d-none d-md-block">Date Reported</span>
+          <span class="d-md-none" title="Date Reported">Reported</span>
+        </th>
+        <th scope="col" class="text-center align-middle">
+          <span class="d-none d-md-block">Date Updated</span>
+          <span class="d-md-none" title="Date Reported">Updated</span>
+        </th>
+        <th scope="col" class="text-center align-middle">
+          <span class="d-none d-md-block">No. of Reports</span>
+          <span class="d-md-none" title="Number of Reports">#</span>
+        </th>
+        <th scope="col" class="text-center align-middle">Status</th>
+        <!-- <th scope="col" class="text-center align-middle">ID</th> -->
+      </tr>
+    </thead>
+    <tbody @fadeInStagger>
+      <tr
+        [hidden] = "loading"
+        *ngFor="let issueStatus of issueStatuses"
+        routerLink="/reporting/issue-view/{{issueStatus.id}}"
+        [class.table-warning]="issueStatus['issueReportCount'] == 0"
+        [class.table-secondary] = "selected.has(issueStatus.id)"
+        [class.table-success]="issueStatus['pinned']"
+        [class.opacity-75]="issueStatus['hidden']"
+        style="cursor:pointer;">
+
+        <!-- Select Issue -->
+        <td (click)="$event.stopPropagation()" style="cursor: default; vertical-align: middle;">
+          <div class="d-flex m-0">
+            <input class="form-check-input"
+                type="checkbox"
+                (click)="$event.stopPropagation()"
+                (change)="updateSelected($event, issueStatus)"
+                [checked]="selected.has(issueStatus.id)">
+            <div class="ps-2 d-flex flex-column align-items-center justify-content-center" style="width: 12.5px">
+              <span class="fa fa-thumbtack fa-xs text-muted opacity-50" *ngIf="issueStatus['pinned']"></span>
+              <span class="fa fa-eye-slash fa-xs text-muted opacity-50 mt-1" *ngIf="issueStatus['hidden']"></span>
+            </div>
+          </div>
+        </td>
+
+        <td>
+          <span *ngIf="issueStatus.issueType">
+            <span class="d-md-none" title="{{issueStatus.issueType}}">{{issueStatus.issueType | truncate:[15]}}</span>
+            <span class="d-none d-md-block">{{issueStatus.issueType}}</span>
+          </span>
+          <span *ngIf="!issueStatus.issueType" class="text-muted">Not Specified</span>
+        </td>
+        <td class="long-text" title="{{issueStatus.description}}">
+          <ng-container *ngIf="issueStatus.description">
+            <span class="d-lg-none">{{issueStatus.description | truncate:[50]}}</span>
+            <span class="d-none d-lg-block">{{issueStatus.description | truncate:[150]}}</span>
+          </ng-container>
+          <span *ngIf="!issueStatus.description" class="text-muted">Not Specified</span>
+        </td>
+        <td class="long-text" title="{{issueStatus.locationDescription}}">
+          <ng-container *ngIf="issueStatus.locationDescription">
+            <span class="d-lg-none">{{issueStatus.locationDescription | truncate:[50]}}</span>
+            <span class="d-none d-lg-block">{{issueStatus.locationDescription | truncate:[150]}}</span>
+          </ng-container>
+          <span *ngIf="!issueStatus.locationDescription" class="text-muted">Not Specified</span>
+        </td>
+        <td class="text-center">
+          <span *ngIf="issueStatus.dateReported">{{issueStatus.dateReported | date}}</span>
+          <span *ngIf="!issueStatus.dateReported" class="text-muted">Not Specified</span>
+        </td>
+        <td class="text-center">
+          <span *ngIf="issueStatus.dateUpdated">{{issueStatus.dateUpdated | date}}</span>
+          <span *ngIf="!issueStatus.dateUpdated" class="text-muted">Not Specified</span>
+        </td>
+        <td class="text-center" style="vertical-align: middle;">
+          <span *ngIf="issueStatus.issueReportCount"><span class="bg-primary px-2 text-white rounded align-middle">{{issueStatus.issueReportCount}}</span></span>
+          <span *ngIf="issueStatus.issueReportCount == 0 || !issueStatus.issueReportCount" class="text-muted"><span class="bg-secondary px-2 text-white rounded align-middle">0</span></span>
+        </td>
+        <td style="vertical-align: middle;">
+          <div>
+            <span class="px-2 text-white rounded-pill pill-body d-flex align-items-center" title="{{issueStatus.status}}" statusColor="{{issueStatus.status}}">
+              <span class="d-xl-none">{{issueStatus.status | truncate:[8]}}</span>
+              <span class="d-none d-xl-block">{{issueStatus.status}}</span>
+            </span>
+          </div>
+        </td>
+        <!-- <td class="text-center">
+          {{issueStatus.id}}
+        </td> -->
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="d-flex justify-content-center mt-2" *ngIf="issueStatuses?.length > 0">
+  <pagination *ngIf="pagination"
+    [boundaryLinks]="true"
+    [totalItems]= "pagination.TotalItems"
+    [itemsPerPage]= "pagination.ItemsPerPage"
+    [maxSize]="7"
+    [(ngModel)]="pagination.CurrentPage"
+    (pageChanged)="pageChanged($event)"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;"
+  >
+  </pagination>
+</div>

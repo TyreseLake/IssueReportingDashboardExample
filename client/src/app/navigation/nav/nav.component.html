@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top d-flex justify-content-center justify-content-sm-between bg-white px-4 px-sm-0">
+    <div class="d-flex mx-4">
+        <a class="navbar-brand text-indigo m-0" routerLink="/home">
+            <img src="{{'./assets/Website_Logo.png'}}" class="d-inline-block align-middle nav-logo" alt="">
+            <span style="vertical-align: text-top;"><strong>Issue Reporting System</strong></span>
+            <span class="home-button" routerLinkActive="hide"><span class="fa fa-home ms-2"></span></span>
+        </a>
+        <!--
+    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+        <li class="nav-item">
+        <a class="nav-link" routerLink="/" routerLinkActive="active">Item 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/" routerLinkActive="active">Item 2</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/" routerLinkActive="active">Item 3</a>
+      </li>
+
+    </ul>
+    -->
+    </div>
+    <div class="ml-auto me-4" *ngIf="(accountService.currentUser$ | async) as user">
+        <div class="dropdown d-inline" dropdown>
+            <span class="text-muted align-text-bottom">Logged in as </span>
+            <a class="dropdown-toggle text-primary" dropdownToggle>
+                <span class="align-text-bottom">
+          <span *ngIf="user.firstName">{{user.firstName | titlecase}}<span *ngIf="user.lastName"> {{user.lastName | titlecase}}</span></span>
+                <span *ngIf="!user.firstName">{{user.userName}}</span>
+                </span>
+            </a>
+            <div class="dropdown-menu mt-2" *dropdownMenu>
+                <a class="dropdown-item" routerLink="/profile" routerLinkActive='active'>Edit Profile</a>
+                <div class="divider dropdown-divider"></div>
+                <a class="dropdown-item" (click)="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div class="ml-auto">
+    <button (click)="logout()" class="btn btn-light text-primary" >
+      Logout
+    </button>
+  </div>
+  -->
+    <div class="ml-auto" *ngIf="!(accountService.currentUser$ | async)">
+        <span class="text-light">You are not logged in.</span>
+    </div>
+</nav>

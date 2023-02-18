@@ -1,0 +1,47 @@
+.nv-file-over {
+  box-sizing: content-box;
+  border: dashed  2px #11998e !important;
+  color: #11998e !important;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.my-drop-zone {
+  box-sizing: content-box;
+  border: dashed  2px rgb(190, 190, 190);
+  border-radius: 0.25rem;
+  color: rgb(190, 190, 190);
+}
+
+.upload-area {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.upload-item {
+  width: 180px;
+}
+
+input[type=file] {
+  color: trasperent;
+}
+
+.close-button {
+  position:absolute;
+  right: 0;
+  top: 0;
+}
+
+.image-area {
+  width: 140px;
+  margin-left: 2px;
+  margin-right: 2px;
+  height: 80px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 0.125rem;
+  border: solid 1px #11998e;
+}
+

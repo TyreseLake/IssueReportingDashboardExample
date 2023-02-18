@@ -1,0 +1,25 @@
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.8rem;
+  z-index: 3;
+  padding-top: 3px;
+  padding-right: 4px;
+}
+
+.error-text-body {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.desaturate {
+  filter: grayscale(1);
+}

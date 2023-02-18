@@ -1,0 +1,146 @@
+<div class="container-fluid pb-5 ps-3">
+    <form [formGroup]="userCreateForm" (ngSubmit)="submitForm()" autocomplete="off">
+
+        <h2 class="mt-2 mb-2 text-primary">
+            <span class="text-primary-gradient">
+        <i class="fa fa-user-plus"></i>
+        Create A New User
+      </span>
+        </h2>
+        <p class="text-muted lead">Fill out the information below to create a new user account for the Issue Reporting System.</p>
+
+        <div class="mx-0 row">
+            <div class="col col-12 col-md-11 col-lg-10 p-0 col-xl-8">
+                <div>
+                    <app-text-input [formControl]="$any(userCreateForm.controls['userName'])" [label]="'User Name'" [leftAlignLabels]=true></app-text-input>
+                </div>
+
+                <div class="minimized-text text-muted offset-md-3"><span>Provided an appropriate username. (e.g. dpt_johndoe, org_janedoe etc.)</span></div>
+
+                <div class="mt-2">
+                    <app-text-input [formControl]="$any(userCreateForm.controls['password'])" [label]="'Password'" [type]="'password'" [leftAlignLabels]=true></app-text-input>
+                </div>
+
+                <div class="mt-2">
+                    <app-text-input [formControl]="$any(userCreateForm.controls['firstName'])" [label]="'First Name'" [leftAlignLabels]=true></app-text-input>
+                </div>
+
+                <div class="mt-2">
+                    <app-text-input [formControl]="$any(userCreateForm.controls['lastName'])" [label]="'Last Name'" [leftAlignLabels]=true></app-text-input>
+                </div>
+
+                <div class="mt-2">
+                    <app-text-input [formControl]="$any(userCreateForm.controls['email'])" [label]="'Email'" [leftAlignLabels]=true></app-text-input>
+                </div>
+
+                <div class="mt-2">
+                    <div class="m-0 form-group row">
+                        <div class="px-0 col-3 d-flex">
+                            <label class="text-muted align-self-center">Account Type</label>
+                        </div>
+                        <div class="px-0 col-9">
+                            <div class="input-group" *ngIf="accountTypes">
+                                <select class="form-select border border-primary" [ngClass]='{
+                          "is-invalid border-danger":this.userCreateForm.controls["accountType"]?.touched && this.userCreateForm.controls["accountType"]?.errors?.["required"],
+                          "text-muted": accountTypeSelect.value == ""
+                        }' formControlName="accountType" #accountTypeSelect>
+                  <option value="" disabled hidden>-- Select Account Type --</option>
+                  <option *ngFor="let type of accountTypes" value='{{type}}'>
+                    <ng-container *ngIf="type == 'Default'">None</ng-container>
+                    <ng-container *ngIf="type != 'Default'">{{type}}</ng-container>
+                  </option>
+                </select>
+                            </div>
+                            <div *ngIf="this.userCreateForm.controls['accountType']?.touched && this.userCreateForm.controls['accountType']?.errors?.['required']" class="ms-3 mt-1 error-text">
+                                Please select an Account Type
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="showExtra">
+                    <p class="text-primary mt-3 mb-0">* Default and Issue Manager users can have Issue Type and District Access Restrictions stated.</p>
+                    <div class="m-0 form-group row">
+                        <div class="px-0 col-3 d-flex text-muted">
+                            <label class="text-secondary align-self-center">District Restrictions</label>
+                        </div>
+                        <div class="px-0 col-9 p-2">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="showDistricts" (change)="resetFormArray(userCreateForm, 'districtAccessPermissions')" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+
+                    <div @fadeInOut *ngIf="showDistricts" class="py-2 px-3 border border-primary rounded row ms-0" [class.border-danger]="this.userCreateForm.controls['districtAccessPermissions']?.touched && this.userCreateForm.controls['districtAccessPermissions']?.value.length == 0">
+                        <div class="col-10 col-sm-9 col-md-7 p-0">
+                            <div class="mt-1 input-group">
+                                <input [(ngModel)]="districtSearchKey" [ngModelOptions]="{standalone: true}" type="text" class="form-control" placeholder="Search District" (keyup.esc)="districtSearchKey=''">
+                                <span class="input-group-text bg-transparent">
+                  <i class="fa fa-search"></i>
+                </span>
+                            </div>
+                        </div>
+
+                        <ng-container *ngFor="let district of districts">
+                            <div class="form-check col-md-6 mt-1" [hidden]="districtSearchKey && !district.split(' ').join('').toLocaleUpperCase().includes(districtSearchKey.split(' ').join('').toLocaleUpperCase())">
+                                <input class="form-check-input" type="checkbox" value="{{district}}" id="{{district}}" (change)="onCheckboxChange(district, $event.target['checked'], 'districtAccessPermissions')">
+                                <label class="form-check-label" for="{{district}}">
+                  {{district}}
+                </label>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="this.userCreateForm.controls['districtAccessPermissions']?.touched && this.userCreateForm.controls['districtAccessPermissions']?.value.length == 0" class="text-danger p-0">
+                            Please select at least 1 of the following districts for the new user to have access to.
+                        </div>
+                    </div>
+
+                    <div class="m-0 form-group row">
+                        <div class="px-0 col-3 d-flex text-muted">
+                            <label class="text-secondary align-self-center">Issue Type Restrictions</label>
+                        </div>
+                        <div class="px-0 col-9 p-2">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="showIssueTypes" (change)="resetFormArray(userCreateForm, 'issueReportAccessPermissions')" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+
+                    <div @fadeInOut *ngIf="showIssueTypes" class="py-2 px-3 border border-primary rounded row ms-0" [class.border-danger]="this.userCreateForm.controls['issueReportAccessPermissions']?.touched && this.userCreateForm.controls['issueReportAccessPermissions']?.value.length == 0">
+                        <div class="col-10 col-sm-9 col-md-7 p-0">
+                            <div class="mt-1 input-group">
+                                <input [(ngModel)]="issueTypeSearchKey" [ngModelOptions]="{standalone: true}" type="text" class="form-control" placeholder="Search Issue Type" (keyup.esc)="issueTypeSearchKey=''">
+                                <span class="input-group-text bg-transparent">
+                  <i class="fa fa-search"></i>
+                </span>
+                            </div>
+                        </div>
+
+                        <ng-container *ngFor="let issueType of issueTypes">
+                            <div class="form-check col-md-6 mt-1" [hidden]="issueTypeSearchKey && !issueType.split(' ').join('').toLocaleUpperCase().includes(issueTypeSearchKey.split(' ').join('').toLocaleUpperCase())" [@fadeAnim]>
+                                <input class="form-check-input" type="checkbox" value="{{issueType}}" id="{{issueType}}" (change)="onCheckboxChange(issueType, $event.target['checked'], 'issueReportAccessPermissions')">
+                                <label class="form-check-label" for="{{issueType}}">
+                  {{issueType}}
+                </label>
+                            </div>
+                        </ng-container>
+
+                        <div *ngIf="this.userCreateForm.controls['issueReportAccessPermissions']?.touched && this.userCreateForm.controls['issueReportAccessPermissions']?.value.length == 0" class="text-danger p-0">
+                            Please select at least 1 of the following issue types for the new user to have access to.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3 ms-3" *ngIf="validationErrors.length > 0">
+                    <ul class="text-danger">
+                        <li *ngFor="let error of validationErrors">{{ error }}</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 row d-flex justify-content-center">
+                    <div class="col-12 col-md-3 mb-2 d-flex justify-content-center">
+                        <button type="success" class="btn btn-primary text-white btn-sm border-0 rounded-pill" style="width: 120px">Submit</button>
+                    </div>
+                    <div class="col-12 col-md-3 mb-2 d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary text-white btn-sm border-0 rounded-pill" style="width: 120px" (click)="cancel()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

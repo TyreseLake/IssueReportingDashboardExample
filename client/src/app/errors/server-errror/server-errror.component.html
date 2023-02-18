@@ -1,0 +1,19 @@
+<div class="mx-0 mt-2 ms-sm-4 py-1 text-center text-sm-start">
+    <a class="navbar-brand text-indigo" routerLink="/home">
+        <img src="{{'./assets/Website_Logo.png'}}" style="height: 30px" class="d-inline-block align-middle nav-logo pe-1" alt="">
+        <strong>Issue Tracking System</strong>
+    </a>
+</div>
+
+<div class="jumbotron d-flex flex-column align-items-center pt-5">
+    <h1 class="display-3 text-primary-gradient"><i class="fa fa-warning"></i> 500</h1>
+    <h3><b>Internal Server Error</b></h3>
+    <p class="lead text-center w-75">
+        The server encountered an error. Sorry for the inconvinience.
+    </p>
+    <h6><a class="rounded-pill px-4 mt-1 text-decoration-none" href="#" role="button">Return Home</a></h6>
+    <ng-container *ngIf="error.message">
+        <h1 class="text-danger display-6 mt-2">Error: {{error.message}}</h1>
+        <code *ngIf="error.details" class="mt-2 px-3 py-2" style="background-color: whitesmoke;">{{error.details}}</code>
+    </ng-container>
+</div>

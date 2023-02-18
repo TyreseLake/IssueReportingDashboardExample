@@ -1,0 +1,91 @@
+<div class="table-responsive p-0 issues-table">
+  <table class="table table-sm table-hover table-striped mb-0">
+    <thead class="text-primary">
+      <tr>
+        <!-- <th scope="col" class="align-middle" style="width: 40px !important;">
+          <input class="form-check-input"
+            type="checkbox"
+            [title]="selected.size > 0 ? 'Deselect All' : 'Select All'"
+            (click)="$event.stopPropagation()"
+            (change)="selectAll($event)"
+            [checked]="selected.size > 0">
+        </th> -->
+        <th scope="col" class="text-center align-middle">Type</th>
+        <th scope="col" class="text-center align-middle">Description</th>
+        <th scope="col" class="text-center align-middle">Location</th>
+        <th scope="col" class="text-center align-middle">
+          <span class="d-none d-md-block">Date Reported</span>
+          <span class="d-md-none" title="Date Reported">Reported</span>
+        </th>
+        <th scope="col" class="text-center align-middle">
+          <span class="d-none d-md-block">Date Updated</span>
+          <span class="d-md-none" title="Date Reported">Updated</span>
+        </th>
+        <th scope="col" class="text-center align-middle">
+          <span class="d-none d-md-block">No. of Reports</span>
+          <span class="d-md-none" title="Number of Reports">#</span>
+        </th>
+        <th scope="col" class="text-center align-middle">Status</th>
+        <th scope="col" class="text-center align-middle">ID</th>
+      </tr>
+    </thead>
+    <tbody @fadeInStagger>
+      <tr
+        *ngFor="let issueStatus of issueStatuses"
+        (click)="selected == issueStatus.id && openLink(issueStatus.id)"
+        [title]="selected == issueStatus.id ? 'Click again to view issue' : '' "
+        [class.table-warning]="issueStatus['issueReportCount'] == 0"
+        [class.table-info] = "selected == issueStatus.id"
+        [class.table-success]="issueStatus['pinned'] && selected != issueStatus.id"
+        [class.opacity-75]="issueStatus['hidden'] || issueStatusId == issueStatus.id"
+        [ngStyle]="{'cursor': issueStatusId != issueStatus.id ? 'pointer' : 'default'}"
+        (click)="issueStatusId != issueStatus.id && select(issueStatus.id)">
+
+        <td class="ps-2">
+          <span *ngIf="issueStatus.issueType">
+            <span class="d-md-none" title="{{issueStatus.issueType}}">{{issueStatus.issueType | truncate:[15]}}</span>
+            <span class="d-none d-md-block">{{issueStatus.issueType}}</span>
+          </span>
+          <span *ngIf="!issueStatus.issueType" class="text-muted">Not Specified</span>
+        </td>
+        <td class="long-text" title="{{issueStatus.description}}">
+          <ng-container *ngIf="issueStatus.description">
+            <span class="d-md-none">{{issueStatus.description | truncate:[50]}}</span>
+            <span class="d-none d-md-block">{{issueStatus.description | truncate:[150]}}</span>
+          </ng-container>
+          <span *ngIf="!issueStatus.description" class="text-muted">Not Specified</span>
+        </td>
+        <td class="long-text" title="{{issueStatus.locationDescription}}">
+          <ng-container *ngIf="issueStatus.locationDescription">
+            <span class="d-md-none">{{issueStatus.locationDescription | truncate:[50]}}</span>
+            <span class="d-none d-md-block">{{issueStatus.locationDescription | truncate:[150]}}</span>
+          </ng-container>
+          <span *ngIf="!issueStatus.locationDescription" class="text-muted">Not Specified</span>
+        </td>
+        <td class="text-center">
+          <span *ngIf="issueStatus.dateReported">{{issueStatus.dateReported | date}}</span>
+          <span *ngIf="!issueStatus.dateReported" class="text-muted">Not Specified</span>
+        </td>
+        <td class="text-center">
+          <span *ngIf="issueStatus.dateUpdated">{{issueStatus.dateUpdated | date}}</span>
+          <span *ngIf="!issueStatus.dateUpdated" class="text-muted">Not Specified</span>
+        </td>
+        <td class="text-center" style="vertical-align: middle;">
+          <span *ngIf="issueStatus.issueReportCount"><span class="bg-primary px-2 text-white rounded align-middle">{{issueStatus.issueReportCount}}</span></span>
+          <span *ngIf="issueStatus.issueReportCount == 0 || !issueStatus.issueReportCount" class="text-muted"><span class="bg-secondary px-2 text-white rounded align-middle">0</span></span>
+        </td>
+        <td style="vertical-align: middle;">
+          <div>
+            <span class="px-2 text-white rounded-pill pill-body d-flex align-items-center" title="{{issueStatus.status}}" statusColor="{{issueStatus.status}}">
+              <span class="d-xl-none">{{issueStatus.status | truncate:[8]}}</span>
+              <span class="d-none d-xl-block">{{issueStatus.status}}</span>
+            </span>
+          </div>
+        </td>
+        <td class="text-center">
+          {{issueStatus.id}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

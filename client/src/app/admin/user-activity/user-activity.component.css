@@ -1,0 +1,14 @@
+thead tr{
+  border-bottom-width: medium;
+}
+
+.pill-body {
+  width: fit-content;
+  white-space: pre;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+table {
+  font-size: 0.9rem !important;
+}
